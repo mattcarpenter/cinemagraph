@@ -2,6 +2,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_Cinemagraph.h"
+#include "StabilizeWindow.h"
 
 class Cinemagraph : public QMainWindow
 {
@@ -12,4 +13,8 @@ public:
 
 private:
     Ui::CinemagraphClass ui;
+	StabilizeWindow stabilizeWindow;
+
+private slots:
+	void on_stabilizeButton_clicked();
 };
