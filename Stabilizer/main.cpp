@@ -1,4 +1,4 @@
-#include "Cinemagraph.h"
+#include "StabilizeWindow.h"
 #include <QtWidgets/QApplication>
 #include <QtWidgets/qstylefactory.h>
 
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 	p.setColor(QPalette::ButtonText, QColor(255, 255, 255));
 	p.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(175, 175, 175));
 	qApp->setPalette(p);
-    Cinemagraph w;
+    StabilizeWindow w;
     w.show();
     return a.exec();
 }

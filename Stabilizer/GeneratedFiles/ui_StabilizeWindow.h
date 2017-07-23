@@ -44,7 +44,7 @@ public:
     QPushButton *pushButton_3;
     QPushButton *pushButton_4;
     QSpacerItem *horizontalSpacer;
-    QPushButton *reset_regions_button;
+    QPushButton *reset_mask_button;
     QPushButton *detect_features_button;
     QPushButton *stabilize_button;
 
@@ -91,6 +91,11 @@ public:
 
         preview = new VideoView(centralWidget);
         preview->setObjectName(QStringLiteral("preview"));
+        QSizePolicy sizePolicy1(QSizePolicy::Ignored, QSizePolicy::Ignored);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(preview->sizePolicy().hasHeightForWidth());
+        preview->setSizePolicy(sizePolicy1);
         preview->setStyleSheet(QStringLiteral("background-color: black;"));
 
         verticalLayout->addWidget(preview);
@@ -141,11 +146,11 @@ public:
 
         horizontalLayout->addItem(horizontalSpacer);
 
-        reset_regions_button = new QPushButton(centralWidget);
-        reset_regions_button->setObjectName(QStringLiteral("reset_regions_button"));
-        reset_regions_button->setEnabled(false);
+        reset_mask_button = new QPushButton(centralWidget);
+        reset_mask_button->setObjectName(QStringLiteral("reset_mask_button"));
+        reset_mask_button->setEnabled(false);
 
-        horizontalLayout->addWidget(reset_regions_button);
+        horizontalLayout->addWidget(reset_mask_button);
 
         detect_features_button = new QPushButton(centralWidget);
         detect_features_button->setObjectName(QStringLiteral("detect_features_button"));
@@ -185,7 +190,7 @@ public:
         pushButton->setText(QApplication::translate("StabilizeWindow", "Pause", Q_NULLPTR));
         pushButton_3->setText(QApplication::translate("StabilizeWindow", "Play", Q_NULLPTR));
         pushButton_4->setText(QApplication::translate("StabilizeWindow", ">>", Q_NULLPTR));
-        reset_regions_button->setText(QApplication::translate("StabilizeWindow", "Reset Regions", Q_NULLPTR));
+        reset_mask_button->setText(QApplication::translate("StabilizeWindow", "Reset Mask", Q_NULLPTR));
         detect_features_button->setText(QApplication::translate("StabilizeWindow", "Detect Features", Q_NULLPTR));
         stabilize_button->setText(QApplication::translate("StabilizeWindow", "Stabilize", Q_NULLPTR));
     } // retranslateUi

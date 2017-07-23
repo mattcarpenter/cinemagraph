@@ -26,11 +26,14 @@ private:
 private slots:
 	void on_loadButton_clicked();
 	void on_detect_features_button_clicked();
+	void on_reset_mask_button_clicked();
+	void on_stabilize_button_clicked();
 
 signals:
 	void DetectFeatures();
 	void Stabilize();
 	void AddMask(cv::Point, cv::Point);
+	void ResetMask();
 
 public slots:
 	void on_videoFrame_updated(cv::Mat frame);

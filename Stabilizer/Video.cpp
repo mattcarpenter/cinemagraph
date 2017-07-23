@@ -14,6 +14,11 @@ namespace fs = std::experimental::filesystem;
 Video::Video(char* path)
 {
 	this->cap = new VideoCapture(path);
+	ResetMask();
+}
+
+void Video::ResetMask()
+{
 	width = this->cap->get(CAP_PROP_FRAME_WIDTH);
 	height = this->cap->get(CAP_PROP_FRAME_HEIGHT);
 	mask = Mat(Size(width, height), CV_8UC1, Scalar(0));
@@ -65,7 +70,12 @@ int Video::Height()
 
 void Video::Stabilize(std::function<void(cv::Mat frame)> callback)
 {
-	Stabilizer::Stabilize(this->cap, mask, callback);
+	Stabilizer::Stabilize(this->cap, mask, callback, false);
+}
+
+void Video::DetectFeatures(std::function<void(cv::Mat frame)> callback)
+{
+	Stabilizer::Stabilize(this->cap, mask, callback, true);
 }
 
 Video::~Video()

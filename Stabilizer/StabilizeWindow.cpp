@@ -32,10 +32,17 @@ void StabilizeWindow::on_videoFrame_updated(cv::Mat frame)
 	if (!loaded) {
 		loaded = true;
 		ui.detect_features_button->setEnabled(true);
+		ui.reset_mask_button->setEnabled(true);
 	}
 }
 
 void StabilizeWindow::on_detect_features_button_clicked()
+{
+	emit DetectFeatures();
+	ui.stabilize_button->setEnabled(true);
+}
+
+void StabilizeWindow::on_stabilize_button_clicked()
 {
 	emit Stabilize();
 }
@@ -43,6 +50,11 @@ void StabilizeWindow::on_detect_features_button_clicked()
 void StabilizeWindow::on_addMask(QPoint a, QPoint b)
 {
 	emit AddMask(Point(a.x(), a.y()), Point(b.x(), b.y()));
+}
+
+void StabilizeWindow::on_reset_mask_button_clicked()
+{
+	emit ResetMask();
 }
 
 void StabilizeWindow::on_loadButton_clicked()
@@ -74,5 +86,6 @@ void StabilizeWindow::on_loadButton_clicked()
 	qDebug() << connect(this, SIGNAL(DetectFeatures()), videoWorker, SLOT(DetectFeatures()));
 	qDebug() << connect(this, SIGNAL(Stabilize()), videoWorker, SLOT(Stabilize()));
 	qDebug() << connect(this, SIGNAL(AddMask(cv::Point, cv::Point)), videoWorker, SLOT(AddMask(cv::Point, cv::Point)));
+	qDebug() << connect(this, SIGNAL(ResetMask()), videoWorker, SLOT(ResetMask()));
 	videoThread->start();
 }

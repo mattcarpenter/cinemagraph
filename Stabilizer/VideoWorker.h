@@ -14,6 +14,7 @@ public slots:
 	void GeneratePreview();
 	void DetectFeatures();
 	void AddMask(cv::Point, cv::Point);
+	void ResetMask();
 signals:
 	void frame(cv::Mat frame);
 

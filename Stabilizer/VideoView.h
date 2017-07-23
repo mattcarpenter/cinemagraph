@@ -13,6 +13,7 @@ public:
 	void SetVideoFrame(cv::Mat frame);
 	void SetMask(cv::Mat mask);
 	void PaintVideoPreview();
+	void resizeEvent(QResizeEvent* event);
 
 private:
 	cv::Mat current_frame;

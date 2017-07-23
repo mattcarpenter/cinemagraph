@@ -63,6 +63,12 @@
     </item>
     <item>
      <widget class="VideoView" name="preview">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="styleSheet">
        <string notr="true">background-color: black;</string>
       </property>
@@ -157,12 +163,12 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="reset_regions_button">
+         <widget class="QPushButton" name="reset_mask_button">
           <property name="enabled">
            <bool>false</bool>
           </property>
           <property name="text">
-           <string>Reset Regions</string>
+           <string>Reset Mask</string>
           </property>
          </widget>
         </item>
