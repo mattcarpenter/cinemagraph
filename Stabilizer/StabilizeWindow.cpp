@@ -74,9 +74,10 @@ void StabilizeWindow::on_loadButton_clicked()
 		return;
 
 	QString filePath = fileNames.at(0);
+	string strFilePath = filePath.toStdString();
 
-	this->video = new Video("C:\\Users\\mattc\\Desktop\\temp\\scaled.mp4");
-
+	this->video = new Video((char*)strFilePath.c_str());
+	
 	// Create the worker and start in a separate thread
 	videoThread = new QThread;
 	videoWorker = new VideoWorker(this->video);

@@ -3,9 +3,11 @@
 #include "Video.h"
 #include "Stabilizer.h"
 #include <opencv2/opencv.hpp>
+#include <opencv2/cudaimgproc.hpp>
 #include <filesystem>
 #include <functional>
 #include <thread>
+#include "qdebug.h"
 
 using namespace std;
 using namespace cv;
@@ -13,7 +15,14 @@ namespace fs = std::experimental::filesystem;
 
 Video::Video(char* path)
 {
+	
 	this->cap = new VideoCapture(path);
+	if (!cap->isOpened())
+	{
+		qDebug() << "could not open video.";
+	}
+	Mat f;
+	bool result = cap->read(f);
 	ResetMask();
 }
 

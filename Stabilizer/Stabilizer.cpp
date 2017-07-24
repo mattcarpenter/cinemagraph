@@ -5,15 +5,32 @@
 #include <filesystem>
 #include <functional>
 #include "qdebug.h"
+#include <opencv2/core/cuda.hpp>
 
 #define AVERAGE_WINDOW 3
+#define USE_CUDA 1
 
 using namespace std;
 using namespace cv;
+using namespace cv::cuda;
 
 int GetSize(int width, int height);
 Rect findMinRect(const Mat1b& src);
 Mat concatenateMatrix(Mat first, Mat second);
+
+static void download(const GpuMat& d_mat, vector<Point2f>& vec)
+{
+	vec.resize(d_mat.cols);
+	Mat mat(1, d_mat.cols, CV_32FC2, (void*)&vec[0]);
+	d_mat.download(mat);
+}
+
+static void download(const GpuMat& d_mat, vector<uchar>& vec)
+{
+	vec.resize(d_mat.cols);
+	Mat mat(1, d_mat.cols, CV_8UC1, (void*)&vec[0]);
+	d_mat.download(mat);
+}
 
 Stabilizer::Stabilizer()
 {
@@ -63,8 +80,8 @@ void Stabilizer::StabilizePass3(VideoCapture *cap, cv::Mat mask, std::function<v
 		if (current_frame_index != -1)
 		{
 			Mat warped_1, warped_2, out;
-			warpAffine(current, warped_1, transforms[current_frame_index], current.size(), INTER_LANCZOS4 + WARP_INVERSE_MAP);
-			warpAffine(warped_1, warped_2, transforms_pass_2[current_frame_index], current.size(), INTER_LANCZOS4 + WARP_INVERSE_MAP);
+			cv::warpAffine(current, warped_1, transforms[current_frame_index], current.size(), INTER_LANCZOS4 + WARP_INVERSE_MAP);
+			cv::warpAffine(warped_1, warped_2, transforms_pass_2[current_frame_index], current.size(), INTER_LANCZOS4 + WARP_INVERSE_MAP);
 			warped_2.copyTo(out);
 			rectangle(out, crop_rect, Scalar(0, 255, 0), 1);
 			callback(out);
@@ -103,18 +120,18 @@ vector<Mat> Stabilizer::StabilizePass2(VideoCapture *cap, ::function<void(cv::Ma
 		mask.setTo(Scalar::all(255));
 
 		// Apply pass-1 warp
-		warpAffine(current, dest, T, current.size(), INTER_LANCZOS4 + WARP_INVERSE_MAP);
-		warpAffine(mask, mask_warped_stage_1, T, current.size(), INTER_LANCZOS4 + WARP_INVERSE_MAP);
+		cv::warpAffine(current, dest, T, current.size(), INTER_LANCZOS4 + WARP_INVERSE_MAP);
+		cv::warpAffine(mask, mask_warped_stage_1, T, current.size(), INTER_LANCZOS4 + WARP_INVERSE_MAP);
 		
 		// Calculate pass-2 warp
 		Mat previous_warped_gray, dest_gray;
-		cvtColor(previous_warped, previous_warped_gray, COLOR_BGR2GRAY);
-		cvtColor(dest, dest_gray, COLOR_BGR2GRAY);
+		cv::cvtColor(previous_warped, previous_warped_gray, COLOR_BGR2GRAY);
+		cv::cvtColor(dest, dest_gray, COLOR_BGR2GRAY);
 		findTransformECC(previous_warped_gray, dest_gray, warp_matrix, MOTION_AFFINE);
 		Mat dest_temp;
 		dest.copyTo(dest_temp);
-		warpAffine(dest, dest_temp, warp_matrix, current.size(), INTER_LANCZOS4 + WARP_INVERSE_MAP);
-		warpAffine(mask_warped_stage_1, mask_warped_stage_2, warp_matrix, current.size(), INTER_LANCZOS4 + WARP_INVERSE_MAP);
+		cv::warpAffine(dest, dest_temp, warp_matrix, current.size(), INTER_LANCZOS4 + WARP_INVERSE_MAP);
+		cv::warpAffine(mask_warped_stage_1, mask_warped_stage_2, warp_matrix, current.size(), INTER_LANCZOS4 + WARP_INVERSE_MAP);
 		dest_temp.copyTo(dest);
 
 		ecc_transforms.push_back(warp_matrix);
@@ -147,6 +164,8 @@ vector<cv::Mat> Stabilizer::StabilizePass1(VideoCapture *cap, cv::Mat mask, ::fu
 {
 	Mat current, current_gray;
 	Mat previous, previous_gray;
+	GpuMat gpu_current_gray;
+	GpuMat gpu_previous_gray;
 	Mat warped_mask;
 	Mat previous_dest;
 	vector <cv::Mat> transforms;
@@ -166,19 +185,20 @@ vector<cv::Mat> Stabilizer::StabilizePass1(VideoCapture *cap, cv::Mat mask, ::fu
 	if (!cap->read(previous))
 		return transforms;
 
-	cvtColor(previous, previous_gray, COLOR_BGR2GRAY);
+	cv::cvtColor(previous, previous_gray, COLOR_BGR2GRAY);
 
 	Size S = Size((int)cap->get(CV_CAP_PROP_FRAME_WIDTH), (int)cap->get(CV_CAP_PROP_FRAME_HEIGHT));
-	
-	// for MPEG:
-	//CV_FOURCC('P', 'I', 'M', '1')	
-	//outputVideo.open("C:\\Users\\mattc\\Desktop\\temp\\out.avi", -1, cap->get(CV_CAP_PROP_FPS), S, true);
 
 	while (cap->read(current))
 	{
-		cvtColor(current, current_gray, COLOR_BGR2GRAY);
+		cv::cvtColor(current, current_gray, COLOR_BGR2GRAY);
+		if (USE_CUDA)
+		{
+			gpu_current_gray = GpuMat(current_gray);
+		}
 
 		// vector from prev to cur
+		GpuMat gpu_previous_corner, gpu_current_corner;
 		vector <Point2f> previous_corner, current_corner;
 		vector <Point2f> previous_corner2, current_corner2;
 		vector <Point2f> previous_corner3, current_corner3;
@@ -186,22 +206,35 @@ vector<cv::Mat> Stabilizer::StabilizePass1(VideoCapture *cap, cv::Mat mask, ::fu
 		vector <Point2f> rejected_points;
 		vector <int> distances;
 		vector <uchar> status;
+		GpuMat gpu_status;
 		vector <float> err;
 		double length_sum = 0;
 
-		goodFeaturesToTrack(previous_gray, previous_corner, 50, 0.001, 15, warped_mask, 8, true);
-		calcOpticalFlowPyrLK(previous_gray, current_gray, previous_corner, current_corner, status, err);
-		
+		int max_corners = 50;
+		double quality_level = 0.0001;
+		int min_distance = 8;
+
+		if (!USE_CUDA)
+		{
+			goodFeaturesToTrack(previous_gray, previous_corner, 50, 0.001, 15, warped_mask, 8, true);
+			calcOpticalFlowPyrLK(previous_gray, current_gray, previous_corner, current_corner, status, err);
+		}
+		else
+		{
+			Ptr<cv::cuda::CornersDetector> detector = cv::cuda::createGoodFeaturesToTrackDetector(previous_gray.type(), max_corners, quality_level, min_distance);
+			gpu_previous_gray = GpuMat(previous_gray);
+			detector->detect(gpu_previous_gray, gpu_previous_corner, GpuMat(warped_mask));
+			
+			Ptr<cuda::SparsePyrLKOpticalFlow> d_pyrLK_sparse = cuda::SparsePyrLKOpticalFlow::create();
+			d_pyrLK_sparse->calc(gpu_previous_gray, gpu_current_gray, gpu_previous_corner, gpu_current_corner, gpu_status);
+			download(gpu_previous_corner, previous_corner);
+			download(gpu_current_corner, current_corner);
+			download(gpu_status, status);
+		}
+
 		// weed out bad matches (pass 1)
 		for (size_t i = 0; i < status.size(); i++) {
 			if (status[i]) {
-				// ensure point still lies within the mask
-				//if (current_corner[i].x > warped_mask.cols || current_corner[i].y > warped_mask.rows
-				//	|| current_corner[i].x < 0 || current_corner[i].y < 0)
-				//	continue;
-				//if (warped_mask.at<uchar>(Point(current_corner[i].x, current_corner[i].y)) != 255)
-				//	continue;
-
 				// calculate distance moved between previous and current
 				int a = previous_corner[i].y - current_corner[i].y;
 				int b = previous_corner[i].x - current_corner[i].x;
@@ -281,10 +314,10 @@ vector<cv::Mat> Stabilizer::StabilizePass1(VideoCapture *cap, cv::Mat mask, ::fu
 		//       transforms and do another pass?
 		Mat dest;
 		Mat temp_mask;
-		warpAffine(current, dest, T, current.size(), INTER_LANCZOS4 + WARP_INVERSE_MAP); //INTER_LANCZOS4
+		cv::warpAffine(current, dest, T, current.size(), INTER_LANCZOS4 + WARP_INVERSE_MAP); //INTER_LANCZOS4
 		out.copyTo(out_dest);
-        warpAffine(out, out_dest, T, current.size(), INTER_LANCZOS4 + WARP_INVERSE_MAP); //INTER_LANCZOS4
-		warpAffine(mask, temp_mask, T, current.size());// WARP_INVERSE_MAP);
+		cv::warpAffine(out, out_dest, T, current.size(), INTER_LANCZOS4 + WARP_INVERSE_MAP); //INTER_LANCZOS4
+		cv::warpAffine(mask, temp_mask, T, current.size());// WARP_INVERSE_MAP);
 		temp_mask.copyTo(warped_mask);
 
 		//outputVideo.write(dest);
