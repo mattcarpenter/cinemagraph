@@ -60,4 +60,5 @@ int Composition::GetEndFrame()
 void Composition::SetPlaying(bool playing)
 {
 	is_playing = playing;
+	video_layer->SetPlaying(is_playing);
 }

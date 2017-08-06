@@ -19,6 +19,7 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QTreeView>
@@ -34,7 +35,13 @@ public:
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_2;
     QHBoxLayout *main;
+    QVBoxLayout *pvw_trnsprt_btns;
     PreviewGL *preview_gl;
+    QHBoxLayout *control_buttons;
+    QSpacerItem *horizontalSpacer;
+    QPushButton *play_button;
+    QPushButton *pause_button;
+    QSpacerItem *horizontalSpacer_2;
     QWidget *sidebar;
     QVBoxLayout *verticalLayout;
     QTreeView *treeView;
@@ -57,7 +64,7 @@ public:
     {
         if (CinemagraphClass->objectName().isEmpty())
             CinemagraphClass->setObjectName(QStringLiteral("CinemagraphClass"));
-        CinemagraphClass->resize(767, 487);
+        CinemagraphClass->resize(945, 659);
         centralWidget = new QWidget(CinemagraphClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayout_2 = new QVBoxLayout(centralWidget);
@@ -67,6 +74,9 @@ public:
         main = new QHBoxLayout();
         main->setSpacing(6);
         main->setObjectName(QStringLiteral("main"));
+        pvw_trnsprt_btns = new QVBoxLayout();
+        pvw_trnsprt_btns->setSpacing(6);
+        pvw_trnsprt_btns->setObjectName(QStringLiteral("pvw_trnsprt_btns"));
         preview_gl = new PreviewGL(centralWidget);
         preview_gl->setObjectName(QStringLiteral("preview_gl"));
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -75,7 +85,34 @@ public:
         sizePolicy.setHeightForWidth(preview_gl->sizePolicy().hasHeightForWidth());
         preview_gl->setSizePolicy(sizePolicy);
 
-        main->addWidget(preview_gl);
+        pvw_trnsprt_btns->addWidget(preview_gl);
+
+        control_buttons = new QHBoxLayout();
+        control_buttons->setSpacing(6);
+        control_buttons->setObjectName(QStringLiteral("control_buttons"));
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        control_buttons->addItem(horizontalSpacer);
+
+        play_button = new QPushButton(centralWidget);
+        play_button->setObjectName(QStringLiteral("play_button"));
+
+        control_buttons->addWidget(play_button);
+
+        pause_button = new QPushButton(centralWidget);
+        pause_button->setObjectName(QStringLiteral("pause_button"));
+
+        control_buttons->addWidget(pause_button);
+
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        control_buttons->addItem(horizontalSpacer_2);
+
+
+        pvw_trnsprt_btns->addLayout(control_buttons);
+
+
+        main->addLayout(pvw_trnsprt_btns);
 
         sidebar = new QWidget(centralWidget);
         sidebar->setObjectName(QStringLiteral("sidebar"));
@@ -151,7 +188,7 @@ public:
         CinemagraphClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(CinemagraphClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 767, 21));
+        menuBar->setGeometry(QRect(0, 0, 945, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuEdit = new QMenu(menuBar);
@@ -185,6 +222,8 @@ public:
     void retranslateUi(QMainWindow *CinemagraphClass)
     {
         CinemagraphClass->setWindowTitle(QApplication::translate("CinemagraphClass", "Cinemagraph", Q_NULLPTR));
+        play_button->setText(QApplication::translate("CinemagraphClass", "Play", Q_NULLPTR));
+        pause_button->setText(QApplication::translate("CinemagraphClass", "Pause", Q_NULLPTR));
         load_video->setText(QApplication::translate("CinemagraphClass", "Load Video", Q_NULLPTR));
         pushButton->setText(QApplication::translate("CinemagraphClass", "Set Current Frame as Still", Q_NULLPTR));
         load_still_frame->setText(QApplication::translate("CinemagraphClass", "Load Still Frame", Q_NULLPTR));

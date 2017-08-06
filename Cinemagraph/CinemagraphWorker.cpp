@@ -52,3 +52,13 @@ void CinemagraphWorker::OnTextureReady(GLuint tid, int pos)
 {
 	emit TextureReady(tid, pos);
 }
+
+void CinemagraphWorker::Play()
+{
+	composition->SetPlaying(true);
+}
+
+void CinemagraphWorker::Pause()
+{
+	composition->SetPlaying(false);
+}

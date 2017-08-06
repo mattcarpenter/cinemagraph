@@ -25,6 +25,8 @@ public slots:
 	bool LoadVideo(std::string path);
 	bool LoadStill(std::string path);
 	void Initialize();
+	void Play();
+	void Pause();
 
 private:
 	Composition *composition;

@@ -49,6 +49,8 @@ void Cinemagraph::OpenGLInitialized()
 	qDebug() << connect(cinemagraph_worker_thread, SIGNAL(started()), cinemagraph_worker, SLOT(Initialize()));
 	qDebug() << connect(this, SIGNAL(LoadVideo(std::string)), cinemagraph_worker, SLOT(LoadVideo(std::string)));
 	qDebug() << connect(this, SIGNAL(LoadStill(std::string)), cinemagraph_worker, SLOT(LoadStill(std::string)));
+	qDebug() << connect(this, SIGNAL(Play()), cinemagraph_worker, SLOT(Play()));
+	qDebug() << connect(this, SIGNAL(Pause()), cinemagraph_worker, SLOT(Pause()));
 	qDebug() << connect(cinemagraph_worker, &CinemagraphWorker::TextureReady, this, &Cinemagraph::OnTextureReady);
 	
 	// Move the worker, context, and surface to the worker thread
@@ -136,7 +138,15 @@ void Cinemagraph::OnTextureReady(GLuint tid, int pos)
 {
 	// Notify the PreviewGL widget that a new composition frame (texture) is ready
 	// to be rendered.
-	qDebug() << pos;
 	ui.preview_gl->TextureReady(tid);
 }
 
+void Cinemagraph::on_play_button_clicked()
+{
+	emit Play();
+}
+
+void Cinemagraph::on_pause_button_clicked()
+{
+	emit Pause();
+}
