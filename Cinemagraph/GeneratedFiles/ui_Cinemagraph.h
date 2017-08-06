@@ -25,6 +25,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include "preview.h"
+#include "previewgl.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -34,7 +35,8 @@ public:
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_2;
     QHBoxLayout *main;
-    Preview *label;
+    PreviewGL *preview_gl;
+    Preview *preview;
     QWidget *sidebar;
     QVBoxLayout *verticalLayout;
     QTreeView *treeView;
@@ -42,7 +44,7 @@ public:
     QPushButton *pushButton;
     QPushButton *load_still_frame;
     QHBoxLayout *horizontalLayout;
-    QPushButton *pushButton_2;
+    QPushButton *new_mask_layer;
     QPushButton *pushButton_3;
     QWidget *timeline;
     QMenuBar *menuBar;
@@ -67,16 +69,23 @@ public:
         main = new QHBoxLayout();
         main->setSpacing(6);
         main->setObjectName(QStringLiteral("main"));
-        label = new Preview(centralWidget);
-        label->setObjectName(QStringLiteral("label"));
+        preview_gl = new PreviewGL(centralWidget);
+        preview_gl->setObjectName(QStringLiteral("preview_gl"));
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
-        label->setSizePolicy(sizePolicy);
-        label->setStyleSheet(QStringLiteral("background-color: #222;"));
+        sizePolicy.setHeightForWidth(preview_gl->sizePolicy().hasHeightForWidth());
+        preview_gl->setSizePolicy(sizePolicy);
 
-        main->addWidget(label);
+        main->addWidget(preview_gl);
+
+        preview = new Preview(centralWidget);
+        preview->setObjectName(QStringLiteral("preview"));
+        sizePolicy.setHeightForWidth(preview->sizePolicy().hasHeightForWidth());
+        preview->setSizePolicy(sizePolicy);
+        preview->setStyleSheet(QStringLiteral("background-color: #222;"));
+
+        main->addWidget(preview);
 
         sidebar = new QWidget(centralWidget);
         sidebar->setObjectName(QStringLiteral("sidebar"));
@@ -117,10 +126,10 @@ public:
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        pushButton_2 = new QPushButton(sidebar);
-        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
+        new_mask_layer = new QPushButton(sidebar);
+        new_mask_layer->setObjectName(QStringLiteral("new_mask_layer"));
 
-        horizontalLayout->addWidget(pushButton_2);
+        horizontalLayout->addWidget(new_mask_layer);
 
         pushButton_3 = new QPushButton(sidebar);
         pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
@@ -178,6 +187,7 @@ public:
         menuBar->addAction(menuHelp->menuAction());
 
         retranslateUi(CinemagraphClass);
+        QObject::connect(preview_gl, SIGNAL(Initialized()), CinemagraphClass, SLOT(OpenGLInitialized()));
 
         QMetaObject::connectSlotsByName(CinemagraphClass);
     } // setupUi
@@ -185,11 +195,11 @@ public:
     void retranslateUi(QMainWindow *CinemagraphClass)
     {
         CinemagraphClass->setWindowTitle(QApplication::translate("CinemagraphClass", "Cinemagraph", Q_NULLPTR));
-        label->setText(QString());
+        preview->setText(QString());
         load_video->setText(QApplication::translate("CinemagraphClass", "Load Video", Q_NULLPTR));
         pushButton->setText(QApplication::translate("CinemagraphClass", "Set Current Frame as Still", Q_NULLPTR));
         load_still_frame->setText(QApplication::translate("CinemagraphClass", "Load Still Frame", Q_NULLPTR));
-        pushButton_2->setText(QApplication::translate("CinemagraphClass", "New Mask Layer", Q_NULLPTR));
+        new_mask_layer->setText(QApplication::translate("CinemagraphClass", "New Mask Layer", Q_NULLPTR));
         pushButton_3->setText(QApplication::translate("CinemagraphClass", "New GND Layer", Q_NULLPTR));
         menuFile->setTitle(QApplication::translate("CinemagraphClass", "File", Q_NULLPTR));
         menuEdit->setTitle(QApplication::translate("CinemagraphClass", "Edit", Q_NULLPTR));

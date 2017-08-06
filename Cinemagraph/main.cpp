@@ -5,6 +5,8 @@
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
+	QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
+	QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 	QApplication::setStyle("motif");
 	QApplication::setStyle(QStyleFactory::create("Fusion"));
 	QPalette p;

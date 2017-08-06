@@ -34,7 +34,6 @@ void VideoView::PaintVideoPreview()
 		QLabel::setPixmap(pmFrame.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 	else
 		setPixmap(pmFrame);
-
 }
 
 void VideoView::resizeEvent(QResizeEvent* event)

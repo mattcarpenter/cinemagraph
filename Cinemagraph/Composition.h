@@ -17,6 +17,8 @@ public:
 	bool LoadVideo(string path);
 	bool LoadStill(string path);
 	bool Render(int frame_number, cv::Mat &target);
+	int FrameCount();
+	void PopFrame(cv::Mat &frame);
 
 private:
 	Layer *video_layer;

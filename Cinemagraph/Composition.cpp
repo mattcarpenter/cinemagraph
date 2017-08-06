@@ -26,7 +26,7 @@ bool Composition::LoadStill(string path)
 
 bool Composition::Render(int frame_number, Mat &target)
 {
-	Mat still_frame, still_overlay;
+	/*Mat still_frame, still_overlay;
 	Mat video_frame, video_overlay;
 
 	still_layer->RenderFrame(frame_number, still_frame, still_overlay);
@@ -37,7 +37,17 @@ bool Composition::Render(int frame_number, Mat &target)
 	{
 		video_frame.copyTo(target);
 		return true;
-	}
+	}*/
 
 	return false;
+}
+
+void Composition::PopFrame(cv::Mat &frame)
+{
+	video_layer->PopFrame(frame);
+}
+
+int Composition::FrameCount()
+{
+	return max(video_layer->FrameCount(), still_layer->FrameCount());
 }
