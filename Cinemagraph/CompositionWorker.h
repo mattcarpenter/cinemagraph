@@ -7,6 +7,7 @@
 #include <qopenglfunctions.h>
 #include <qopenglfunctions_3_0.h>
 #include <qoffscreensurface.h>
+#include <RenderWorker.h>
 
 class CompositionWorker : public QObject, protected QOpenGLFunctions_3_0
 {
@@ -41,7 +42,10 @@ private:
 	int end_frame = 0;
 
 	std::thread playback_timer_thread;
+	QThread *render_loop_thread;
+	RenderWorker *render_worker;
 
 private slots:
-	void update();
+	void RenderLoop();
+	void OnTextureReady(GLuint tid);
 };

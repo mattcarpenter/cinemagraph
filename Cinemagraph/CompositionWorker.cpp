@@ -1,6 +1,7 @@
 #include "CompositionWorker.h"
 #include <qdebug.h>
 #include <ctime>
+#include <qthread.h>
 
 using namespace cv;
 
@@ -32,14 +33,31 @@ bool CompositionWorker::LoadStill(std::string path)
 void CompositionWorker::Test()
 {
 	//playback_timer_thread = std::thread(&CompositionWorker::update, this);
-	Mat frame;
-	composition->PopFrame(frame);
-	Render(frame);
+	//Mat frame;
+	//composition->PopFrame(frame);
+	//Render(frame);
+	render_loop_thread = new QThread;
+	render_worker = new RenderWorker(composition, q_opengl_context, q_surface);
+	
+	qDebug() << connect(render_loop_thread, SIGNAL(started()), render_worker, SLOT(Start()));
+	qDebug() << connect(render_worker, &RenderWorker::TextureReady, this, &CompositionWorker::OnTextureReady);
+
+	q_opengl_context->doneCurrent();
+	q_opengl_context->moveToThread(render_loop_thread);
+	q_surface->moveToThread(render_loop_thread);
+	render_worker->moveToThread(render_loop_thread);
+
+	render_loop_thread->start();
+}
+
+void CompositionWorker::OnTextureReady(GLuint tid)
+{
+	emit TextureReady(tid);
 }
 
 cv::Mat f;
 
-void CompositionWorker::update()
+void CompositionWorker::RenderLoop()
 {
 	Mat frame;
 	while (1)
