@@ -16,11 +16,13 @@ public:
 	
 	bool LoadVideo(string path);
 	bool LoadStill(string path);
-	void Render(cv::Mat &target);
+	int Render(cv::Mat &target);
 
 	int GetFrameCount();
 	void SetStartFrame(int sf);
+	int GetStartFrame();
 	void SetEndFrame(int ef);
+	int GetEndFrame();
 	void SetPlaying(bool playing);
 
 private:

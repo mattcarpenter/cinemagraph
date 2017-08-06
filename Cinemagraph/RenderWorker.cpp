@@ -25,18 +25,17 @@ void RenderWorker::Start()
 		int start_time = clock();
 		
 		// Render the next composition frame
-		composition->Render(frame);
+		int video_pos = composition->Render(frame);
 
 		// Load into an OpenGL texture
 		PrepareTexture(frame);
 
 		// Signal to the UI thread that the texture can now be applied to a quad
 		// and rendered by the PreviewGL widget.
-		emit TextureReady(texture_id);
+		emit TextureReady(texture_id, video_pos);
 		
 		int end_time = clock();
 		int duration = (end_time - start_time) / double(CLOCKS_PER_SEC) * 1000;
-		qDebug() << "duration: " << duration;
 		
 		// Try to keep this block executing every 40ms
 		// TODO - Use framerate of composition

@@ -24,8 +24,9 @@ public:
 	void SetStartFrame(int sf);
 	void SetEndFrame(int ef);
 	void SetPlaying(bool playing);
+	void Seek(int pos);
 	
-	void Render(cv::Mat &frame);
+	int Render(cv::Mat &frame);
 private:
 	void CaptureLoop();
 

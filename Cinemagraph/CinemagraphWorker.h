@@ -19,7 +19,7 @@ public:
 
 signals:
 	void Frame(cv::Mat &frame);
-	void TextureReady(GLuint tex);
+	void TextureReady(GLuint tex, int pos);
 
 public slots:
 	bool LoadVideo(std::string path);
@@ -36,5 +36,5 @@ private:
 	RenderWorker *render_worker;
 
 private slots:
-	void OnTextureReady(GLuint tid);
+	void OnTextureReady(GLuint tid, int pos);
 };

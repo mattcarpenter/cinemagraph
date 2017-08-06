@@ -116,12 +116,14 @@ int Layer::GetFrameCount()
 		return -1;
 }
 
-void Layer::Render(cv::Mat &frame)
+int Layer::Render(cv::Mat &frame)
 {
 	if (layer_type == LayerType::STILL)
 	{
 		still.copyTo(frame);
 		// TODO - Process (mask, adjustments, etc)
+
+		return 1;
 	}
 	else
 	{
@@ -142,6 +144,10 @@ void Layer::Render(cv::Mat &frame)
 			capture_queue.pop();
 			capture_sem->notify(2);
 		}
+
+		// TODO - figure out how to get the index of the last frame read from the front
+		// of the queue, not the index of the last frame captured from the video.
+		return current_frame_number;
 	}
 }
 
@@ -161,10 +167,22 @@ void Layer::CaptureLoop()
 		capture_sem->notify(1);
 		capture_queue.push(frame.clone());
 
-		if (++current_frame_number >= video_capture_frame_count)
+		if (++current_frame_number >= min(end_frame, video_capture_frame_count))
 		{
-			current_frame_number = 0;
+			current_frame_number = start_frame;
 			video_capture->set(CV_CAP_PROP_POS_FRAMES, 0);
 		}
 	}
+}
+
+/**
+ * Seeks to a specified position in the video. NOOP if layer is a still
+ */
+void Layer::Seek(int pos)
+{
+	if (layer_type == LayerType::STILL)
+		return;
+
+	video_capture->set(CV_CAP_PROP_POS_FRAMES, pos);
+	current_frame_number = pos;
 }

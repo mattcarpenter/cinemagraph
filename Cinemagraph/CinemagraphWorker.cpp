@@ -23,6 +23,8 @@ bool CinemagraphWorker::LoadVideo(std::string path)
 		//end_frame = composition->GetFrameCount();
 		return true;
 	}
+
+	return false;
 }
 
 bool CinemagraphWorker::LoadStill(std::string path)
@@ -46,7 +48,7 @@ void CinemagraphWorker::Initialize()
 	render_worker_thread->start();
 }
 
-void CinemagraphWorker::OnTextureReady(GLuint tid)
+void CinemagraphWorker::OnTextureReady(GLuint tid, int pos)
 {
-	emit TextureReady(tid);
+	emit TextureReady(tid, pos);
 }

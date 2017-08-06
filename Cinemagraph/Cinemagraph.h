@@ -16,7 +16,7 @@ public slots:
 	void on_load_still_clicked();
 	void on_new_mask_layer_clicked();
 	void OpenGLInitialized();
-	void OnTextureReady(GLuint tid);
+	void OnTextureReady(GLuint tid, int pos);
 
 private:
 	Ui::CinemagraphClass ui;

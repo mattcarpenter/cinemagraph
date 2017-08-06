@@ -24,10 +24,12 @@ bool Composition::LoadStill(string path)
 	return still_layer->LoadImage(path);
 }
 
-void Composition::Render(Mat &target)
+int Composition::Render(Mat &target)
 {
 	// TODO - Render still layer and blend with video
-	video_layer->Render(target);
+	int video_pos = video_layer->Render(target);
+
+	return video_pos;
 }
 
 int Composition::GetFrameCount()
@@ -43,6 +45,16 @@ void Composition::SetStartFrame(int sf)
 void Composition::SetEndFrame(int ef)
 {
 	end_frame = ef;
+}
+
+int Composition::GetStartFrame()
+{
+	return start_frame;
+}
+
+int Composition::GetEndFrame()
+{
+	return end_frame;
 }
 
 void Composition::SetPlaying(bool playing)
