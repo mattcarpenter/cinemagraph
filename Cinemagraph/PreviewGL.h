@@ -13,7 +13,7 @@ public:
 	PreviewGL(QWidget *parent);
 	~PreviewGL();
 	void Test(cv::Mat frame);
-	void TextureReady(GLuint tid);
+	void TextureReady(GLuint tid, int width, int height);
 
 protected:
 	void initializeGL();
@@ -24,7 +24,8 @@ private:
 	GLuint matToTexture(cv::Mat &mat, GLenum minFilter, GLenum magFilter, GLenum wrapFilter);
 	cv::Mat current_frame;
 	GLuint texture_id = 0;
-
+	int texture_width = 0;
+	int texture_height = 0;
 signals:
 	void Initialized();
 };

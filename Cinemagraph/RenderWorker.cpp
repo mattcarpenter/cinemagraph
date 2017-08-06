@@ -32,7 +32,7 @@ void RenderWorker::Start()
 
 		// Signal to the UI thread that the texture can now be applied to a quad
 		// and rendered by the PreviewGL widget.
-		emit TextureReady(texture_id, video_pos);
+		emit TextureReady(texture_id, video_pos, frame.cols, frame.rows);
 		
 		int end_time = clock();
 		int duration = (end_time - start_time) / double(CLOCKS_PER_SEC) * 1000;

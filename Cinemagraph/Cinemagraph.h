@@ -18,7 +18,7 @@ public slots:
 	void on_play_button_clicked();
 	void on_pause_button_clicked();
 	void OpenGLInitialized();
-	void OnTextureReady(GLuint tid, int pos);
+	void OnTextureReady(GLuint tid, int pos, int width, int height);
 
 private:
 	Ui::CinemagraphClass ui;

@@ -48,9 +48,9 @@ void CinemagraphWorker::Initialize()
 	render_worker_thread->start();
 }
 
-void CinemagraphWorker::OnTextureReady(GLuint tid, int pos)
+void CinemagraphWorker::OnTextureReady(GLuint tid, int pos, int width, int height)
 {
-	emit TextureReady(tid, pos);
+	emit TextureReady(tid, pos, width, height);
 }
 
 void CinemagraphWorker::Play()

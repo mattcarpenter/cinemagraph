@@ -29,5 +29,5 @@ private:
 	GLuint texture_id;
 
 signals:
-	void TextureReady(GLuint tid, int pos);
+	void TextureReady(GLuint tid, int pos, int width, int height);
 };

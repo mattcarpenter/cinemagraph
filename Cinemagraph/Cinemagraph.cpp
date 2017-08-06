@@ -134,11 +134,11 @@ void Cinemagraph::on_new_mask_layer_clicked()
  * Signals that a new composition frame has been uploaded by the worker thread
  * into OpenGL and should be rendered by the PreviewGL widget.
  */
-void Cinemagraph::OnTextureReady(GLuint tid, int pos)
+void Cinemagraph::OnTextureReady(GLuint tid, int pos, int width, int height)
 {
 	// Notify the PreviewGL widget that a new composition frame (texture) is ready
 	// to be rendered.
-	ui.preview_gl->TextureReady(tid);
+	ui.preview_gl->TextureReady(tid, width, height);
 }
 
 void Cinemagraph::on_play_button_clicked()

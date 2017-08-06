@@ -49,7 +49,7 @@ void PreviewGL::paintGL()
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, readFboId);
-	glBlitFramebuffer(0, 0, 500, 500,
+	glBlitFramebuffer(0, 0, texture_width, texture_height,
 		0, 0, this->width(), this->height(),
 		GL_COLOR_BUFFER_BIT, GL_LINEAR);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
@@ -61,9 +61,11 @@ void PreviewGL::Test(cv::Mat frame)
 	update();
 }
 
-void PreviewGL::TextureReady(GLuint tid)
+void PreviewGL::TextureReady(GLuint tid, int width, int height)
 {
 	texture_id = tid;
+	texture_width = width;
+	texture_height = height;
 	update();
 }
 
