@@ -33,7 +33,6 @@ void PreviewGL::paintGL()
 	glLoadIdentity();
 
 	// Move things back into the screen
-	glTranslatef(0.0f, 0.0f, -8.0f);
 
 	glEnable(GL_TEXTURE_2D);
 

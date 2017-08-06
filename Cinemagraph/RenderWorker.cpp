@@ -20,6 +20,7 @@ RenderWorker::~RenderWorker()
 void RenderWorker::Start()
 {
 	Mat frame;
+	Mat frame_flipped;
 	while (1)
 	{
 		int start_time = clock();
@@ -27,8 +28,10 @@ void RenderWorker::Start()
 		// Render the next composition frame
 		int video_pos = composition->Render(frame);
 
+		flip(frame, frame_flipped, 0);
+
 		// Load into an OpenGL texture
-		PrepareTexture(frame);
+		PrepareTexture(frame_flipped);
 
 		// Signal to the UI thread that the texture can now be applied to a quad
 		// and rendered by the PreviewGL widget.
