@@ -19,10 +19,10 @@ public slots:
 	void Start();
 
 private:
-	Composition *composition;
-
-	void Render(cv::Mat frame);
+	void PrepareTexture(cv::Mat frame);
 	void matToTexture(cv::Mat &mat, GLenum minFilter, GLenum magFilter, GLenum wrapFilter, GLuint &tid);
+
+	Composition *composition;
 
 	QOpenGLContext *q_opengl_context;
 	QSurface *q_surface;

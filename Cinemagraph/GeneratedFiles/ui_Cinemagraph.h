@@ -24,7 +24,6 @@
 #include <QtWidgets/QTreeView>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include "preview.h"
 #include "previewgl.h"
 
 QT_BEGIN_NAMESPACE
@@ -36,7 +35,6 @@ public:
     QVBoxLayout *verticalLayout_2;
     QHBoxLayout *main;
     PreviewGL *preview_gl;
-    Preview *preview;
     QWidget *sidebar;
     QVBoxLayout *verticalLayout;
     QTreeView *treeView;
@@ -78,14 +76,6 @@ public:
         preview_gl->setSizePolicy(sizePolicy);
 
         main->addWidget(preview_gl);
-
-        preview = new Preview(centralWidget);
-        preview->setObjectName(QStringLiteral("preview"));
-        sizePolicy.setHeightForWidth(preview->sizePolicy().hasHeightForWidth());
-        preview->setSizePolicy(sizePolicy);
-        preview->setStyleSheet(QStringLiteral("background-color: #222;"));
-
-        main->addWidget(preview);
 
         sidebar = new QWidget(centralWidget);
         sidebar->setObjectName(QStringLiteral("sidebar"));
@@ -195,7 +185,6 @@ public:
     void retranslateUi(QMainWindow *CinemagraphClass)
     {
         CinemagraphClass->setWindowTitle(QApplication::translate("CinemagraphClass", "Cinemagraph", Q_NULLPTR));
-        preview->setText(QString());
         load_video->setText(QApplication::translate("CinemagraphClass", "Load Video", Q_NULLPTR));
         pushButton->setText(QApplication::translate("CinemagraphClass", "Set Current Frame as Still", Q_NULLPTR));
         load_still_frame->setText(QApplication::translate("CinemagraphClass", "Load Still Frame", Q_NULLPTR));

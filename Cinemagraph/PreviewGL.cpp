@@ -13,7 +13,7 @@ PreviewGL::~PreviewGL()
 void PreviewGL::initializeGL()
 {
 	initializeOpenGLFunctions();
-	glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	emit Initialized();
 }
 
@@ -26,10 +26,6 @@ void PreviewGL::paintGL()
 {
 	if (texture_id == 0)
 		return;
-	
-	int start_time = clock();
-	
-	//GLuint tex = matToTexture(current_frame, GL_NEAREST, GL_NEAREST, GL_CLAMP);
 	
 	glBindTexture(GL_TEXTURE_2D, texture_id);
 
@@ -44,7 +40,6 @@ void PreviewGL::paintGL()
 	// Quad width and height
 	float w = 6.4f;
 	float h = 4.8f;
-	// ---
 	
 	GLuint readFboId = 0;
 	glGenFramebuffers(1, &readFboId);
@@ -58,16 +53,6 @@ void PreviewGL::paintGL()
 		0, 0, this->width(), this->height(),
 		GL_COLOR_BUFFER_BIT, GL_LINEAR);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-	
-
-	// ---
-	//glDeleteTextures(1, &texture_id);
-	int current_time = clock();
-	//qDebug() << "render:" << (current_time - last_time) / double(CLOCKS_PER_SEC) * 1000;
-	last_time = current_time;
-
-	//qDebug() << "process:" << (current_time - start_time) / double(CLOCKS_PER_SEC) * 1000;
-	
 }
 
 void PreviewGL::Test(cv::Mat frame)

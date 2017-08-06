@@ -9,16 +9,13 @@
 #include <qoffscreensurface.h>
 #include <RenderWorker.h>
 
-class CompositionWorker : public QObject, protected QOpenGLFunctions_3_0
+class CinemagraphWorker : public QObject, protected QOpenGLFunctions_3_0
 {
 	Q_OBJECT
 
 public:
-	CompositionWorker();
-	~CompositionWorker();
-
-	QOpenGLContext *q_opengl_context;
-	QOffscreenSurface *q_surface;
+	CinemagraphWorker(QOpenGLContext *context, QOffscreenSurface *surface);
+	~CinemagraphWorker();
 
 signals:
 	void Frame(cv::Mat &frame);
@@ -27,25 +24,17 @@ signals:
 public slots:
 	bool LoadVideo(std::string path);
 	bool LoadStill(std::string path);
-	void Test();
+	void Initialize();
 
 private:
-
-	void Render(cv::Mat frame);
-	void matToTexture(cv::Mat &mat, GLenum minFilter, GLenum magFilter, GLenum wrapFilter, GLuint &tid);
-	GLuint texture_id = 0;
-
 	Composition *composition;
+	
+	QOpenGLContext *q_opengl_context;
+	QOffscreenSurface *q_surface;
 
-	int current_frame = 0;
-	int start_frame = 0;
-	int end_frame = 0;
-
-	std::thread playback_timer_thread;
-	QThread *render_loop_thread;
+	QThread *render_worker_thread;
 	RenderWorker *render_worker;
 
 private slots:
-	void RenderLoop();
 	void OnTextureReady(GLuint tid);
 };

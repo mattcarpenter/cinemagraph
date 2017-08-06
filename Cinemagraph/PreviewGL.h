@@ -23,7 +23,6 @@ protected:
 private:
 	GLuint matToTexture(cv::Mat &mat, GLenum minFilter, GLenum magFilter, GLenum wrapFilter);
 	cv::Mat current_frame;
-	int last_time = 0;
 	GLuint texture_id = 0;
 
 signals:

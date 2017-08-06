@@ -28,6 +28,9 @@ bool Layer::LoadVideo(string path)
 	if (!video_capture->isOpened())
 		qDebug() << "could not open video.";
 	
+	// Initial processing of video
+	// Counts the number of frames, generates thumbnails, etc.
+	// TODO - Generate thumbnails for transport
 	if (result = video_capture->read(frame))
 	{
 		// get length
@@ -36,11 +39,13 @@ bool Layer::LoadVideo(string path)
 		while (video_capture->read(frame))
 			video_capture_frame_count++;
 
+		end_frame = video_capture_frame_count;
+
 		// reset position
 		video_capture->set(CV_CAP_PROP_POS_FRAMES, 0);
 		layer_type = LayerType::VIDEO;
 
-		// Begin the capture thread
+		// Begin the continuous capture thread
 		capture_thread = std::thread(&Layer::CaptureLoop, this);
 		
 	}
@@ -67,11 +72,41 @@ bool Layer::LoadImage(string path)
 }
 
 /**
- * Returns the number of frames contained within this layer
+ * Sets the playback loop starting frame
  *
- * @return {int} layer count
+ * @param {int} sf
  */
-int Layer::FrameCount()
+void Layer::SetStartFrame(int sf)
+{
+	start_frame = max(0, min(sf, video_capture_frame_count));
+}
+
+/**
+ * Sets the playback loop ending frame
+ *
+ * @param {int} ef
+ */
+void Layer::SetEndFrame(int ef)
+{
+	end_frame = max(0, min(ef, video_capture_frame_count));
+}
+
+/**
+ * Sets whether or not each call to Render() advances to the next frame
+ *
+ * @param {bool} playing
+ */
+void Layer::SetPlaying(bool playing)
+{
+	is_playing = playing;
+}
+
+/**
+ * Returns the number of frames in the video, or 1 if the layer contains a still
+ *
+ * @return {int} frame count
+ */
+int Layer::GetFrameCount()
 {
 	if (layer_type == LayerType::STILL)
 		return 1;
@@ -81,27 +116,33 @@ int Layer::FrameCount()
 		return -1;
 }
 
-/**
- * Renders layer at given frame position
- *
- */
-/*void Layer::RenderFrame(int pos, Mat &frame, Mat &overlay)
+void Layer::Render(cv::Mat &frame)
 {
-	if (video_capture == NULL || !video_capture->isOpened())
-		return;
-		
-	// FFMPEG prefers that we don't try to explicitly increment the frames,
-	// especially for heavily-compressed source mataterial such as H.264.
-	if (pos == 0)
-		video_capture->set(CV_CAP_PROP_POS_FRAMES, pos);
-	video_capture->read(frame);
-}*/
+	if (layer_type == LayerType::STILL)
+	{
+		still.copyTo(frame);
+		// TODO - Process (mask, adjustments, etc)
+	}
+	else
+	{
+		// Wait for the capture thread to push a frame if needed
+		if (capture_queue.size() == 0)
+		{
+			while (capture_queue.size() == 0)
+			{
+				this_thread::sleep_for(chrono::milliseconds(1));
+			}
+		}
 
-void Layer::PopFrame(cv::Mat &frame)
-{
-	capture_queue.front().copyTo(frame);
-	capture_queue.pop();
-	capture_sem->notify(2);
+		capture_queue.front().copyTo(frame);
+		// TODO - Process (mask, adjustments, etc)
+		
+		if (is_playing)
+		{
+			capture_queue.pop();
+			capture_sem->notify(2);
+		}
+	}
 }
 
 void Layer::CaptureLoop()

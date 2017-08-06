@@ -24,30 +24,28 @@ bool Composition::LoadStill(string path)
 	return still_layer->LoadImage(path);
 }
 
-bool Composition::Render(int frame_number, Mat &target)
+void Composition::Render(Mat &target)
 {
-	/*Mat still_frame, still_overlay;
-	Mat video_frame, video_overlay;
-
-	still_layer->RenderFrame(frame_number, still_frame, still_overlay);
-	video_layer->RenderFrame(frame_number, video_frame, video_overlay);
-
-	// TODO - merge still and video frames; push result into frame queue
-	if (video_frame.cols > 0)
-	{
-		video_frame.copyTo(target);
-		return true;
-	}*/
-
-	return false;
+	// TODO - Render still layer and blend with video
+	video_layer->Render(target);
 }
 
-void Composition::PopFrame(cv::Mat &frame)
+int Composition::GetFrameCount()
 {
-	video_layer->PopFrame(frame);
+	return max(video_layer->GetFrameCount(), still_layer->GetFrameCount());
 }
 
-int Composition::FrameCount()
+void Composition::SetStartFrame(int sf)
 {
-	return max(video_layer->FrameCount(), still_layer->FrameCount());
+	start_frame = sf;
+}
+
+void Composition::SetEndFrame(int ef)
+{
+	end_frame = ef;
+}
+
+void Composition::SetPlaying(bool playing)
+{
+	is_playing = playing;
 }

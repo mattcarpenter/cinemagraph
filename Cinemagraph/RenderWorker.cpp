@@ -14,25 +14,41 @@ RenderWorker::~RenderWorker()
 {
 }
 
+/**
+ * Runs the render loop
+ */
 void RenderWorker::Start()
 {
 	Mat frame;
 	while (1)
 	{
-		//Mat frame;
 		int start_time = clock();
-		composition->PopFrame(frame);
-		Render(frame);
-		//emit Frame(frame);
+		
+		// Render the next composition frame
+		composition->Render(frame);
+
+		// Load into an OpenGL texture
+		PrepareTexture(frame);
+
+		// Signal to the UI thread that the texture can now be applied to a quad
+		// and rendered by the PreviewGL widget.
+		emit TextureReady(texture_id);
+		
 		int end_time = clock();
 		int duration = (end_time - start_time) / double(CLOCKS_PER_SEC) * 1000;
-
 		qDebug() << "duration: " << duration;
+		
+		// Try to keep this block executing every 40ms
+		// TODO - Use framerate of composition
 		this_thread::sleep_for(chrono::milliseconds(40 - duration));
 	}
 }
 
-void RenderWorker::Render(cv::Mat frame)
+/**
+ * Loads a cv::Mat into an OpenGL texture within a context shared with the PreviewGL
+ * widget on the main thread.
+ */
+void RenderWorker::PrepareTexture(cv::Mat frame)
 {
 	if (frame.rows == 0)
 		return;
@@ -43,9 +59,17 @@ void RenderWorker::Render(cv::Mat frame)
 	int width = 500;
 	int height = 500;
 	matToTexture(frame, GL_NEAREST, GL_NEAREST, GL_CLAMP, texture_id);
-	emit TextureReady(texture_id);
 }
 
+/**
+ * Loads a cv::Mat into an OpenGL texture
+ *
+ * @param {cv::Mat&} mat Source image
+ * @param {GLenum} minFilter
+ * @param {GLenum} magFilter
+ * @param {GLenum} wrapFilter
+ * @param {GLuint&} tid
+ */
 void RenderWorker::matToTexture(cv::Mat &mat, GLenum minFilter, GLenum magFilter, GLenum wrapFilter, GLuint &tid)
 {
 	QOpenGLFunctions *f = q_opengl_context->functions();

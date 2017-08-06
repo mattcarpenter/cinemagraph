@@ -19,23 +19,30 @@ public:
 
 	bool LoadVideo(std::string path);
 	bool LoadImage(std::string path);
-	int FrameCount();
-	//void RenderFrame(int pos, cv::Mat &frame, cv::Mat &overlay);
-	void PopFrame(cv::Mat &frame);
+	
+	int GetFrameCount();
+	void SetStartFrame(int sf);
+	void SetEndFrame(int ef);
+	void SetPlaying(bool playing);
+	
+	void Render(cv::Mat &frame);
 private:
 	void CaptureLoop();
 
-	cv::VideoCapture *video_capture = NULL;
-	cv::Mat still;
-
-	int video_capture_frame_count = -1;
-	int current_frame_number = 0;
-	
 	LayerType layer_type = LayerType::NONE;
-
+	
+	cv::Mat still;
+	cv::VideoCapture *video_capture = NULL;
+	
 	std::thread capture_thread;
 	std::queue<cv::Mat> capture_queue;
 	Semaphore *capture_sem;
-	int capture_queue_max_length = 10;
+
+	int capture_queue_max_length = 5;
+	int video_capture_frame_count = -1;
+	int current_frame_number = 0;
+	int start_frame = 0;
+	int end_frame = -1;
+	bool is_playing = false;
 };
 
