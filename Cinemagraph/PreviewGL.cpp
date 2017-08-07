@@ -32,14 +32,8 @@ void PreviewGL::paintGL()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
-	// Move things back into the screen
-
 	glEnable(GL_TEXTURE_2D);
 
-	// Quad width and height
-	float w = 6.4f;
-	float h = 4.8f;
-	
 	GLuint readFboId = 0;
 	glGenFramebuffers(1, &readFboId);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, readFboId);
