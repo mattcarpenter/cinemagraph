@@ -43,9 +43,6 @@ void PreviewGL::paintGL()
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, readFboId);
-	//glBlitFramebuffer(0, 0, texture_width, texture_height,
-	//	0, 0, this->width(), this->height(),
-	//	GL_COLOR_BUFFER_BIT, GL_LINEAR);
 	cv::Rect crop_area = GetDrawSize();
 	glBlitFramebuffer(0, 0, texture_width, texture_height,
 		crop_area.x, crop_area.y, crop_area.width, crop_area.height,
