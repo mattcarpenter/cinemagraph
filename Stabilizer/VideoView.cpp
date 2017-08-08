@@ -27,10 +27,10 @@ void VideoView::PaintVideoPreview()
 	QPixmap pmFrame = ASM::cvMatToQPixmap(preview_buffer);
 	int frame_width = pmFrame.width();
 	int frame_height = pmFrame.height();
-	int label_width = this->width();
-	int label_height = this->height();
+	int this_width = this->width();
+	int this_height = this->height();
 	this->setAlignment(Qt::AlignCenter);
-	if (frame_width > label_width || frame_height > label_height)
+	if (frame_width > this_width || frame_height > this_height)
 		QLabel::setPixmap(pmFrame.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 	else
 		setPixmap(pmFrame);
@@ -41,10 +41,10 @@ void VideoView::resizeEvent(QResizeEvent* event)
 	QPixmap pmFrame = ASM::cvMatToQPixmap(preview_buffer);
 	int frame_width = pmFrame.width();
 	int frame_height = pmFrame.height();
-	int label_width = this->width();
-	int label_height = this->height();
+	int this_width = this->width();
+	int this_height = this->height();
 	this->setAlignment(Qt::AlignCenter);
-	if (frame_width > label_width || frame_height > label_height)
+	if (frame_width > this_width || frame_height > this_height)
 		QLabel::setPixmap(pmFrame.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 	else
 		setPixmap(pmFrame);
@@ -103,17 +103,17 @@ QPoint VideoView::MouseToVideoPoint(QPoint mouse_point)
 
 	int frame_width = current_frame.cols;
 	int frame_height = current_frame.rows;
-	int label_width = this->width();
-	int label_height = this->height();
+	int this_width = this->width();
+	int this_height = this->height();
 
 	int margin_x;
 	int margin_y;
 
-	if (label_width > frame_width && label_height > frame_height)
+	if (this_width > frame_width && this_height > frame_height)
 	{
 		// image is smaller than the label, so it's placed in the center and scaled 1:1
-		margin_x = (label_width - frame_width) / 2;
-		margin_y = (label_height - frame_height) / 2;
+		margin_x = (this_width - frame_width) / 2;
+		margin_y = (this_height - frame_height) / 2;
 		int mouse_x = mouse_point.x() - margin_x;
 		int mouse_y = mouse_point.y() - margin_y;
 
@@ -124,20 +124,20 @@ QPoint VideoView::MouseToVideoPoint(QPoint mouse_point)
 
 	// Image has been scaled down
 	int scaled_width, scaled_height;
-	if (label_width * frame_height / frame_width > label_height)
+	if (this_width * frame_height / frame_width > this_height)
 	{
 		// Margins are on the left and right
-		scaled_width = frame_width * label_height / frame_height;
-		scaled_height = label_height;
+		scaled_width = frame_width * this_height / frame_height;
+		scaled_height = this_height;
 		margin_y = 0;
-		margin_x = (label_width - scaled_width) / 2;
+		margin_x = (this_width - scaled_width) / 2;
 	}
 	else
 	{
 		// Margins are on the top and bottom
-		scaled_width = label_width;
-		scaled_height = frame_height * label_width / frame_width;
-		margin_y = (label_height - scaled_height) / 2;
+		scaled_width = this_width;
+		scaled_height = frame_height * this_width / frame_width;
+		margin_y = (this_height - scaled_height) / 2;
 		margin_x = 0;
 	}
 

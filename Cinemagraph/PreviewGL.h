@@ -22,6 +22,9 @@ protected:
 
 private:
 	GLuint matToTexture(cv::Mat &mat, GLenum minFilter, GLenum magFilter, GLenum wrapFilter);
+	QPoint MouseToVideoPoint(QPoint mouse_point);
+	void mousePressEvent(QMouseEvent * event);
+	cv::Rect GetDrawSize();
 	cv::Mat current_frame;
 	GLuint texture_id = 0;
 	int texture_width = 0;
