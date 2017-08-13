@@ -62,3 +62,8 @@ void CinemagraphWorker::Pause()
 {
 	composition->SetPlaying(false);
 }
+
+void CinemagraphWorker::RequestNextFrame()
+{
+	render_worker->sem->notify(2);
+}

@@ -39,7 +39,7 @@ private:
 	std::queue<cv::Mat> capture_queue;
 	Semaphore *capture_sem;
 
-	int capture_queue_max_length = 5;
+	int capture_queue_max_length = 1;
 	int video_capture_frame_count = -1;
 	int current_frame_number = 0;
 	int start_frame = 0;

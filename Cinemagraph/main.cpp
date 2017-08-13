@@ -18,6 +18,14 @@ int main(int argc, char *argv[])
 	p.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(175, 175, 175));
 	p.setColor(QPalette::WindowText, QColor(210, 210, 210));
 	qApp->setPalette(p);
+
+	/*QSurfaceFormat format;
+	format.setProfile(QSurfaceFormat::CoreProfile);
+	format.setDepthBufferSize(24);
+	format.setStencilBufferSize(8);
+	format.setSwapInterval(1);
+	QSurfaceFormat::setDefaultFormat(format);*/
+
 	Cinemagraph w;
 	w.show();
 	return a.exec();

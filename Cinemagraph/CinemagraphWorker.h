@@ -27,6 +27,7 @@ public slots:
 	void Initialize();
 	void Play();
 	void Pause();
+	void RequestNextFrame();
 
 private:
 	Composition *composition;

@@ -135,8 +135,9 @@ int Layer::Render(cv::Mat &frame)
 				this_thread::sleep_for(chrono::milliseconds(1));
 			}
 		}
-
+		
 		capture_queue.front().copyTo(frame);
+
 		// TODO - Process (mask, adjustments, etc)
 		
 		if (is_playing)
@@ -164,8 +165,8 @@ void Layer::CaptureLoop()
 		}
 
 		video_capture->read(frame);
-		capture_sem->notify(1);
 		capture_queue.push(frame.clone());
+		capture_sem->notify(1);
 
 		if (++current_frame_number >= min(end_frame, video_capture_frame_count))
 		{

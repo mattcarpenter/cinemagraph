@@ -2,10 +2,11 @@
 
 #include <QOpenGLWidget>
 #include <qopenglfunctions.h>
-#include <qopenglfunctions_3_0.h>
+#include <qopenglfunctions_4_5_core.h>
+
 #include <opencv2/opencv.hpp>
 
-class PreviewGL : public QOpenGLWidget, protected QOpenGLFunctions_3_0
+class PreviewGL : public QOpenGLWidget, protected QOpenGLFunctions_4_5_Core
 {
 	Q_OBJECT
 
@@ -21,7 +22,6 @@ protected:
 	void paintGL();
 
 private:
-	GLuint matToTexture(cv::Mat &mat, GLenum minFilter, GLenum magFilter, GLenum wrapFilter);
 	QPoint MouseToVideoPoint(QPoint mouse_point);
 	void mousePressEvent(QMouseEvent * event);
 	cv::Rect GetDrawSize();
@@ -31,4 +31,5 @@ private:
 	int texture_height = 0;
 signals:
 	void Initialized();
+	void RequestNextFrame();
 };
