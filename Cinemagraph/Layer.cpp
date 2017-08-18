@@ -19,23 +19,23 @@ Layer::~Layer()
  * @param {string} path
  * @return {bool}
  */
-bool Layer::LoadVideo(string path)
+bool Layer::LoadVideo(string path, function<void(cv::Mat)> thumb_callback)
 {
 	Mat frame;
 	bool result;
 
+	layer_type = LayerType::VIDEO;
+	
 	video_capture = new VideoCapture(path);
 	if (!video_capture->isOpened())
 		qDebug() << "could not open video.";
 	
 	// Initial processing of video
 	// Counts the number of frames, generates thumbnails, etc.
-	// TODO - Generate thumbnails for transport
 	if (result = video_capture->read(frame))
 	{
-		// get length
+		// PASS 1: Count frames
 		video_capture_frame_count = 1;
-
 		while (video_capture->read(frame))
 			video_capture_frame_count++;
 
@@ -43,7 +43,25 @@ bool Layer::LoadVideo(string path)
 
 		// reset position
 		video_capture->set(CV_CAP_PROP_POS_FRAMES, 0);
-		layer_type = LayerType::VIDEO;
+
+		// PASS 2: Generate thumbnails
+		int current_frame = 0;
+		while (video_capture->read(frame))
+		{
+			if (current_frame % (video_capture_frame_count / thumb_count) == 0)
+			{
+				Mat resized;
+				int w = frame.cols * thumb_height / frame.rows;
+				int h = thumb_height;
+				resize(frame, resized, Size(w, h), 0, 0, INTER_AREA);
+				thumb_callback(resized);
+			}
+
+			current_frame++;
+		}
+
+		// reset position
+		video_capture->set(CV_CAP_PROP_POS_FRAMES, 0);
 
 		// Begin the continuous capture thread
 		capture_thread = std::thread(&Layer::CaptureLoop, this);
@@ -116,14 +134,16 @@ int Layer::GetFrameCount()
 		return -1;
 }
 
-int Layer::Render(cv::Mat &frame)
+int Layer::RenderNextFrame(cv::Mat &frame)
 {
+	int captured_frame_pos = 0;
+
 	if (layer_type == LayerType::STILL)
 	{
 		still.copyTo(frame);
 		// TODO - Process (mask, adjustments, etc)
 
-		return 1;
+		return 0;
 	}
 	else
 	{
@@ -136,25 +156,29 @@ int Layer::Render(cv::Mat &frame)
 			}
 		}
 		
-		capture_queue.front().copyTo(frame);
-
+		CaptureFrame *cf = capture_queue.front();
+		cf->GetFrame(frame);
+		captured_frame_pos = cf->GetFrameNumber();
 		// TODO - Process (mask, adjustments, etc)
 		
 		if (is_playing)
 		{
 			capture_queue.pop();
+			delete cf;
 			capture_sem->notify(2);
 		}
 
 		// TODO - figure out how to get the index of the last frame read from the front
 		// of the queue, not the index of the last frame captured from the video.
-		return current_frame_number;
+		return captured_frame_pos;
 	}
 }
 
 void Layer::CaptureLoop()
 {
 	Mat frame;
+	int last_captured_frame_pos = 0;
+
 	while (1)
 	{
 		if (capture_queue.size() >= capture_queue_max_length)
@@ -165,13 +189,18 @@ void Layer::CaptureLoop()
 		}
 
 		video_capture->read(frame);
-		capture_queue.push(frame.clone());
+		capture_queue.push(new CaptureFrame(frame, last_captured_frame_pos));
 		capture_sem->notify(1);
 
 		if (++current_frame_number >= min(end_frame, video_capture_frame_count))
 		{
 			current_frame_number = start_frame;
+			last_captured_frame_pos = 0;
 			video_capture->set(CV_CAP_PROP_POS_FRAMES, 0);
+		}
+		else
+		{
+			last_captured_frame_pos++;
 		}
 	}
 }

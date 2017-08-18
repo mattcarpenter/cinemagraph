@@ -19,6 +19,7 @@ public slots:
 	void on_pause_button_clicked();
 	void OpenGLInitialized();
 	void OnTextureReady(GLuint tid, int pos, int width, int height);
+	void OnThumbnail(cv::Mat thumb);
 
 private:
 	Ui::CinemagraphClass ui;

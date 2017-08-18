@@ -14,9 +14,9 @@ Composition::~Composition()
 {
 }
 
-bool Composition::LoadVideo(string path)
+bool Composition::LoadVideo(string path, function<void(cv::Mat)> thumb_callback)
 {
-	return video_layer->LoadVideo(path);
+	return video_layer->LoadVideo(path, thumb_callback);
 }
 
 bool Composition::LoadStill(string path)
@@ -27,7 +27,7 @@ bool Composition::LoadStill(string path)
 int Composition::Render(Mat &target)
 {
 	// TODO - Render still layer and blend with video
-	int video_pos = video_layer->Render(target);
+	int video_pos = video_layer->RenderNextFrame(target);
 
 	return video_pos;
 }

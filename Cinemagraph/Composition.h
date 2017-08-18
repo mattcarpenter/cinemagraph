@@ -14,7 +14,7 @@ public:
 	Composition();
 	~Composition();
 	
-	bool LoadVideo(string path);
+	bool LoadVideo(string path, function<void(cv::Mat)> thumb_callback);
 	bool LoadStill(string path);
 	int Render(cv::Mat &target);
 

@@ -20,6 +20,7 @@ public:
 signals:
 	void Frame(cv::Mat &frame);
 	void TextureReady(GLuint tex, int pos, int width, int height);
+	void Thumbnail(cv::Mat);
 
 public slots:
 	bool LoadVideo(std::string path);

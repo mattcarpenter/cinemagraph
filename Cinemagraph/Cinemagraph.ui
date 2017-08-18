@@ -166,9 +166,9 @@
      </layout>
     </item>
     <item>
-     <widget class="QWidget" name="timeline" native="true">
+     <widget class="Transport" name="transport_bar" native="true">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -254,6 +254,12 @@
    <slots>
     <signal>Initialized()</signal>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>Transport</class>
+   <extends>QWidget</extends>
+   <header>transport.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

@@ -26,6 +26,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include "previewgl.h"
+#include "transport.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -51,7 +52,7 @@ public:
     QHBoxLayout *horizontalLayout;
     QPushButton *new_mask_layer;
     QPushButton *pushButton_3;
-    QWidget *timeline;
+    Transport *transport_bar;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuEdit;
@@ -172,18 +173,18 @@ public:
 
         verticalLayout_2->addLayout(main);
 
-        timeline = new QWidget(centralWidget);
-        timeline->setObjectName(QStringLiteral("timeline"));
-        QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        transport_bar = new Transport(centralWidget);
+        transport_bar->setObjectName(QStringLiteral("transport_bar"));
+        QSizePolicy sizePolicy2(QSizePolicy::Ignored, QSizePolicy::Fixed);
         sizePolicy2.setHorizontalStretch(0);
         sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(timeline->sizePolicy().hasHeightForWidth());
-        timeline->setSizePolicy(sizePolicy2);
-        timeline->setMinimumSize(QSize(0, 50));
-        timeline->setBaseSize(QSize(0, 50));
-        timeline->setStyleSheet(QStringLiteral("background-color: #222;"));
+        sizePolicy2.setHeightForWidth(transport_bar->sizePolicy().hasHeightForWidth());
+        transport_bar->setSizePolicy(sizePolicy2);
+        transport_bar->setMinimumSize(QSize(0, 50));
+        transport_bar->setBaseSize(QSize(0, 50));
+        transport_bar->setStyleSheet(QStringLiteral("background-color: #222;"));
 
-        verticalLayout_2->addWidget(timeline);
+        verticalLayout_2->addWidget(transport_bar);
 
         CinemagraphClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(CinemagraphClass);

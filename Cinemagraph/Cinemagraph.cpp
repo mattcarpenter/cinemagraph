@@ -53,7 +53,8 @@ void Cinemagraph::OpenGLInitialized()
 	qDebug() << connect(this, SIGNAL(Pause()), cinemagraph_worker, SLOT(Pause()));
 	qDebug() << connect(ui.preview_gl, SIGNAL(RequestNextFrame()), cinemagraph_worker, SLOT(RequestNextFrame()));
 	qDebug() << connect(cinemagraph_worker, &CinemagraphWorker::TextureReady, this, &Cinemagraph::OnTextureReady);
-	
+	qDebug() << connect(cinemagraph_worker, &CinemagraphWorker::Thumbnail, this, &Cinemagraph::OnThumbnail);
+
 	// Move the worker, context, and surface to the worker thread
 	cinemagraph_worker->moveToThread(cinemagraph_worker_thread);
 	context->moveToThread(cinemagraph_worker_thread);
@@ -62,6 +63,11 @@ void Cinemagraph::OpenGLInitialized()
 	// Start the worker thread. The Cinemagraph worker will create its own render thread that emits an OpenGL
 	// texture ID back to the main thread, triggering a redraw of the PreviewGL widget.
 	cinemagraph_worker_thread->start();
+}
+
+void Cinemagraph::OnThumbnail(cv::Mat thumb)
+{
+	ui.transport_bar->AppendThumbnail(thumb);
 }
 
 /**

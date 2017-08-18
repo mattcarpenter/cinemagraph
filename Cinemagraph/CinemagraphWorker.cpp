@@ -18,7 +18,11 @@ CinemagraphWorker::~CinemagraphWorker()
 
 bool CinemagraphWorker::LoadVideo(std::string path)
 {
-	if (composition->LoadVideo(path))
+	bool result = composition->LoadVideo(path, [&](cv::Mat frame) {
+		emit Thumbnail(frame);
+	});
+
+	if (result)
 	{
 		//end_frame = composition->GetFrameCount();
 		return true;
