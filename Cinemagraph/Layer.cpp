@@ -136,6 +136,8 @@ int Layer::GetFrameCount()
 
 int Layer::RenderNextFrame(cv::Mat &frame)
 {
+	// NOTE - Executed within RenderWorker thread
+
 	int captured_frame_pos = 0;
 
 	if (layer_type == LayerType::STILL)
@@ -147,6 +149,12 @@ int Layer::RenderNextFrame(cv::Mat &frame)
 	}
 	else
 	{
+		// Block this render if the CaptureLoop is currently seeking
+		while (seek_to_frame > -1)
+		{
+			capture_sem->notify(2);
+		}
+
 		// Wait for the capture thread to push a frame if needed
 		if (capture_queue.size() == 0)
 		{
@@ -165,6 +173,8 @@ int Layer::RenderNextFrame(cv::Mat &frame)
 		{
 			capture_queue.pop();
 			delete cf;
+
+			// notify capture thread that we've popped a frame
 			capture_sem->notify(2);
 		}
 
@@ -181,11 +191,29 @@ void Layer::CaptureLoop()
 
 	while (1)
 	{
-		if (capture_queue.size() >= capture_queue_max_length)
+		if (capture_queue.size() >= capture_queue_max_length && seek_to_frame == -1)
 		{
 			// wait for the consumer to pop a frame off the queue
 			capture_sem->wait(1);
 			continue;
+		}
+
+		if (seek_to_frame > -1)
+		{
+			// Seeking
+			video_capture->set(CV_CAP_PROP_POS_FRAMES, seek_to_frame);
+			
+			// Empty the capture queue
+			while (capture_queue.size() > 0)
+			{
+				delete capture_queue.front();
+				capture_queue.pop();
+			}
+
+			// Adjust our state
+			last_captured_frame_pos = seek_to_frame;
+			current_frame_number = seek_to_frame;
+			seek_to_frame = -1;
 		}
 
 		video_capture->read(frame);
@@ -195,8 +223,8 @@ void Layer::CaptureLoop()
 		if (++current_frame_number >= min(end_frame, video_capture_frame_count))
 		{
 			current_frame_number = start_frame;
-			last_captured_frame_pos = 0;
-			video_capture->set(CV_CAP_PROP_POS_FRAMES, 0);
+			last_captured_frame_pos = start_frame;
+			bool success = video_capture->set(CV_CAP_PROP_POS_FRAMES, start_frame);
 		}
 		else
 		{
@@ -212,7 +240,5 @@ void Layer::Seek(int pos)
 {
 	if (layer_type == LayerType::STILL)
 		return;
-
-	video_capture->set(CV_CAP_PROP_POS_FRAMES, pos);
-	current_frame_number = pos;
+	seek_to_frame = pos;
 }

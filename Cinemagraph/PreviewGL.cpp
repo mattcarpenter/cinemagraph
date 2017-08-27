@@ -74,6 +74,11 @@ cv::Rect PreviewGL::GetDrawSize()
 	int this_width = this->width();
 	int this_height = this->height();
 
+	if (texture_height == 0 || texture_width == 0)
+	{
+		return ret;
+	}
+
 	// If we scale the video down to fit the entire width of the view, will the proportional
 	// height be less than the view? if so, make the video the full width of the view and scale
 	// the height.

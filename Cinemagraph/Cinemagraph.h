@@ -17,9 +17,14 @@ public slots:
 	void on_new_mask_layer_clicked();
 	void on_play_button_clicked();
 	void on_pause_button_clicked();
+	void on_loop_in_button_clicked();
+	void on_loop_out_button_clicked();
 	void OpenGLInitialized();
-	void OnTextureReady(GLuint tid, int pos, int width, int height);
+	void OnTextureReady(GLuint tid, int pos, int video_length, int width, int height);
 	void OnThumbnail(cv::Mat thumb);
+	void LoopInPosition(int pos);
+	void LoopOutPosition(int pos);
+	void OnTransportSeekStart(int pos);
 
 private:
 	Ui::CinemagraphClass ui;
@@ -33,4 +38,7 @@ signals:
 	void Test();
 	void Play();
 	void Pause();
+	void LoopIn();
+	void LoopOut();
+	void Seek(int pos);
 };

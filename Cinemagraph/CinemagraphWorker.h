@@ -15,12 +15,15 @@ class CinemagraphWorker : public QObject, protected QOpenGLFunctions_3_0
 
 public:
 	CinemagraphWorker(QOpenGLContext *context, QOffscreenSurface *surface);
+	Composition* GetComposition();
 	~CinemagraphWorker();
 
 signals:
 	void Frame(cv::Mat &frame);
-	void TextureReady(GLuint tex, int pos, int width, int height);
+	void TextureReady(GLuint tex, int pos, int video_length, int width, int height);
 	void Thumbnail(cv::Mat);
+	void LoopInPosition(int pos);
+	void LoopOutPosition(int pos);
 
 public slots:
 	bool LoadVideo(std::string path);
@@ -28,7 +31,11 @@ public slots:
 	void Initialize();
 	void Play();
 	void Pause();
+	void Unpause();
 	void RequestNextFrame();
+	void Seek(int pos);
+	void LoopIn();
+	void LoopOut();
 
 private:
 	Composition *composition;
@@ -39,6 +46,11 @@ private:
 	QThread *render_worker_thread;
 	RenderWorker *render_worker;
 
+	bool playing = false;
+	bool last_playing_state = false;
+
+	int current_frame = 0;
+
 private slots:
-	void OnTextureReady(GLuint tid, int pos, int width, int height);
+	void OnTextureReady(GLuint tid, int pos, int video_length, int width, int height);
 };

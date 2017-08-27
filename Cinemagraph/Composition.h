@@ -24,6 +24,10 @@ public:
 	void SetEndFrame(int ef);
 	int GetEndFrame();
 	void SetPlaying(bool playing);
+	void Seek(int pos);
+
+	Layer* GetVideoLayer();
+	Layer* GetStillLayer();
 
 private:
 	Layer *video_layer;

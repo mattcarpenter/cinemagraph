@@ -52,22 +52,54 @@ void CinemagraphWorker::Initialize()
 	render_worker_thread->start();
 }
 
-void CinemagraphWorker::OnTextureReady(GLuint tid, int pos, int width, int height)
+void CinemagraphWorker::OnTextureReady(GLuint tid, int pos, int video_length, int width, int height)
 {
-	emit TextureReady(tid, pos, width, height);
+	current_frame = pos;
+	emit TextureReady(tid, pos, video_length, width, height);
 }
 
 void CinemagraphWorker::Play()
 {
-	composition->SetPlaying(true);
+	last_playing_state = playing = true;
+	composition->SetPlaying(playing);
 }
 
 void CinemagraphWorker::Pause()
 {
-	composition->SetPlaying(false);
+	last_playing_state = playing;
+	playing = false;
+	composition->SetPlaying(playing);
 }
 
 void CinemagraphWorker::RequestNextFrame()
 {
 	render_worker->sem->notify(2);
+}
+
+void CinemagraphWorker::Unpause()
+{
+	composition->SetPlaying(last_playing_state);
+	playing = last_playing_state;
+}
+
+void CinemagraphWorker::Seek(int pos)
+{
+	composition->Seek(pos);
+}
+
+void CinemagraphWorker::LoopIn()
+{
+	composition->SetStartFrame(current_frame);
+	emit LoopInPosition(current_frame);
+}
+
+void CinemagraphWorker::LoopOut()
+{
+	composition->SetEndFrame(current_frame);
+	emit LoopOutPosition(current_frame);
+}
+
+Composition* CinemagraphWorker::GetComposition()
+{
+	return composition;
 }

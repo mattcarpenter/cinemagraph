@@ -22,10 +22,10 @@
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
-#include <QtWidgets/QTreeView>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include "previewgl.h"
+#include "projecttree.h"
 #include "transport.h"
 
 QT_BEGIN_NAMESPACE
@@ -42,10 +42,12 @@ public:
     QSpacerItem *horizontalSpacer;
     QPushButton *play_button;
     QPushButton *pause_button;
+    QPushButton *loop_in_button;
+    QPushButton *loop_out_button;
     QSpacerItem *horizontalSpacer_2;
     QWidget *sidebar;
     QVBoxLayout *verticalLayout;
-    QTreeView *treeView;
+    ProjectTree *project_tree;
     QPushButton *load_video;
     QPushButton *pushButton;
     QPushButton *load_still_frame;
@@ -105,6 +107,16 @@ public:
 
         control_buttons->addWidget(pause_button);
 
+        loop_in_button = new QPushButton(centralWidget);
+        loop_in_button->setObjectName(QStringLiteral("loop_in_button"));
+
+        control_buttons->addWidget(loop_in_button);
+
+        loop_out_button = new QPushButton(centralWidget);
+        loop_out_button->setObjectName(QStringLiteral("loop_out_button"));
+
+        control_buttons->addWidget(loop_out_button);
+
         horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         control_buttons->addItem(horizontalSpacer_2);
@@ -130,11 +142,13 @@ public:
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
-        treeView = new QTreeView(sidebar);
-        treeView->setObjectName(QStringLiteral("treeView"));
-        treeView->setStyleSheet(QStringLiteral("background-color: #222; "));
+        project_tree = new ProjectTree(sidebar);
+        project_tree->setObjectName(QStringLiteral("project_tree"));
+        project_tree->setStyleSheet(QLatin1String("background-color: #222; \n"
+"color: rgb(210,210,210);\n"
+""));
 
-        verticalLayout->addWidget(treeView);
+        verticalLayout->addWidget(project_tree);
 
         load_video = new QPushButton(sidebar);
         load_video->setObjectName(QStringLiteral("load_video"));
@@ -175,14 +189,15 @@ public:
 
         transport_bar = new Transport(centralWidget);
         transport_bar->setObjectName(QStringLiteral("transport_bar"));
-        QSizePolicy sizePolicy2(QSizePolicy::Ignored, QSizePolicy::Fixed);
+        QSizePolicy sizePolicy2(QSizePolicy::Ignored, QSizePolicy::Maximum);
         sizePolicy2.setHorizontalStretch(0);
         sizePolicy2.setVerticalStretch(0);
         sizePolicy2.setHeightForWidth(transport_bar->sizePolicy().hasHeightForWidth());
         transport_bar->setSizePolicy(sizePolicy2);
         transport_bar->setMinimumSize(QSize(0, 50));
         transport_bar->setBaseSize(QSize(0, 50));
-        transport_bar->setStyleSheet(QStringLiteral("background-color: #222;"));
+        transport_bar->setStyleSheet(QLatin1String("background-color: #222;\n"
+""));
 
         verticalLayout_2->addWidget(transport_bar);
 
@@ -225,6 +240,8 @@ public:
         CinemagraphClass->setWindowTitle(QApplication::translate("CinemagraphClass", "Cinemagraph", Q_NULLPTR));
         play_button->setText(QApplication::translate("CinemagraphClass", "Play", Q_NULLPTR));
         pause_button->setText(QApplication::translate("CinemagraphClass", "Pause", Q_NULLPTR));
+        loop_in_button->setText(QApplication::translate("CinemagraphClass", "Set Loop In", Q_NULLPTR));
+        loop_out_button->setText(QApplication::translate("CinemagraphClass", "Set Loop Out", Q_NULLPTR));
         load_video->setText(QApplication::translate("CinemagraphClass", "Load Video", Q_NULLPTR));
         pushButton->setText(QApplication::translate("CinemagraphClass", "Set Current Frame as Still", Q_NULLPTR));
         load_still_frame->setText(QApplication::translate("CinemagraphClass", "Load Still Frame", Q_NULLPTR));

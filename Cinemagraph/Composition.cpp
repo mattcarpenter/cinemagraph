@@ -26,6 +26,8 @@ bool Composition::LoadStill(string path)
 
 int Composition::Render(Mat &target)
 {
+	// NOTE - Executed within RenderWorker thread
+
 	// TODO - Render still layer and blend with video
 	int video_pos = video_layer->RenderNextFrame(target);
 
@@ -40,11 +42,13 @@ int Composition::GetFrameCount()
 void Composition::SetStartFrame(int sf)
 {
 	start_frame = sf;
+	video_layer->SetStartFrame(sf);
 }
 
 void Composition::SetEndFrame(int ef)
 {
 	end_frame = ef;
+	video_layer->SetEndFrame(ef);
 }
 
 int Composition::GetStartFrame()
@@ -57,8 +61,23 @@ int Composition::GetEndFrame()
 	return end_frame;
 }
 
+void Composition::Seek(int pos)
+{
+	video_layer->Seek(pos);
+}
+
 void Composition::SetPlaying(bool playing)
 {
 	is_playing = playing;
 	video_layer->SetPlaying(is_playing);
+}
+
+Layer* Composition::GetVideoLayer()
+{
+	return video_layer;
+}
+
+Layer* Composition::GetStillLayer()
+{
+	return still_layer;
 }

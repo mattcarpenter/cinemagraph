@@ -17,6 +17,11 @@ RenderWorker::~RenderWorker()
 {
 }
 
+void RenderWorker::SetSeeking(bool seeking)
+{
+	is_seeking = seeking;
+}
+
 void RenderWorker::Start()
 {
 	Mat frame;
@@ -31,10 +36,14 @@ void RenderWorker::Start()
 	while (1)
 	{
 		sem->wait(1); // wait for UI to request another frame
+
 		int start_time = clock();
 		
 		// Render the next composition frame
 		int video_pos = composition->Render(frame);
+
+		// Get frame count
+		int video_length = composition->GetFrameCount();
 
 		flip(frame, frame_flipped, 0);
 
@@ -43,8 +52,7 @@ void RenderWorker::Start()
 		
 		// Signal to the UI thread that the texture can now be applied to a quad
 		// and rendered by the PreviewGL widget.
-
-		emit TextureReady(tid, video_pos, frame.cols, frame.rows);
+		emit TextureReady(tid, video_pos, video_length, frame.cols, frame.rows);
 
 		int end_time = clock();
 		int duration = (end_time - start_time) / double(CLOCKS_PER_SEC) * 1000;

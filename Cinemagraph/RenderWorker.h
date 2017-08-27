@@ -14,6 +14,8 @@ class RenderWorker : public QObject, protected QOpenGLFunctions_4_5_Core
 public:
 	RenderWorker(Composition *comp, QOpenGLContext *ctx, QSurface *sfc);
 	~RenderWorker();
+	void SetSeeking(bool seeking);
+
 	Semaphore *sem;
 public slots:
 	void Start();
@@ -31,7 +33,9 @@ private:
 	int current_texture_index = 0;
 	GLuint *texture_ids;
 	bool initial_texture_created = false;
+
+	bool is_seeking = false;
 	
 signals:
-	void TextureReady(GLuint tid, int pos, int width, int height);
+	void TextureReady(GLuint tid, int pos, int video_length, int width, int height);
 };

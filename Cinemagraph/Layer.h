@@ -5,6 +5,7 @@
 #include <mutex>
 #include "Semaphore.h"
 #include "CaptureFrame.h"
+#include "ILayer.h"
 
 enum class LayerType {
 	VIDEO,
@@ -12,7 +13,7 @@ enum class LayerType {
 	NONE
 };
 
-class Layer
+class Layer : public ILayer
 {
 public:
 	Layer();
@@ -50,5 +51,7 @@ private:
 	int start_frame = 0;
 	int end_frame = -1;
 	bool is_playing = false;
+
+	int seek_to_frame = -1;
 };
 

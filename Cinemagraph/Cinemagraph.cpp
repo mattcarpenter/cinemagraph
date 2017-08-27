@@ -45,15 +45,30 @@ void Cinemagraph::OpenGLInitialized()
 	cinemagraph_worker_thread = new QThread;
 	cinemagraph_worker = new CinemagraphWorker(context, surface);
 
+	ui.project_tree->AddVideoLayer(cinemagraph_worker->GetComposition()->GetVideoLayer());
+	ui.project_tree->AddStillLayer(cinemagraph_worker->GetComposition()->GetStillLayer());
+	
 	// Connect slots and signals between the main thread and the Cinemagraph worker
-	qDebug() << connect(cinemagraph_worker_thread, SIGNAL(started()), cinemagraph_worker, SLOT(Initialize()));
-	qDebug() << connect(this, SIGNAL(LoadVideo(std::string)), cinemagraph_worker, SLOT(LoadVideo(std::string)));
-	qDebug() << connect(this, SIGNAL(LoadStill(std::string)), cinemagraph_worker, SLOT(LoadStill(std::string)));
-	qDebug() << connect(this, SIGNAL(Play()), cinemagraph_worker, SLOT(Play()));
-	qDebug() << connect(this, SIGNAL(Pause()), cinemagraph_worker, SLOT(Pause()));
-	qDebug() << connect(ui.preview_gl, SIGNAL(RequestNextFrame()), cinemagraph_worker, SLOT(RequestNextFrame()));
-	qDebug() << connect(cinemagraph_worker, &CinemagraphWorker::TextureReady, this, &Cinemagraph::OnTextureReady);
-	qDebug() << connect(cinemagraph_worker, &CinemagraphWorker::Thumbnail, this, &Cinemagraph::OnThumbnail);
+	connect(cinemagraph_worker_thread, SIGNAL(started()), cinemagraph_worker, SLOT(Initialize()));
+	connect(this, SIGNAL(LoadVideo(std::string)), cinemagraph_worker, SLOT(LoadVideo(std::string)));
+	connect(this, SIGNAL(LoadStill(std::string)), cinemagraph_worker, SLOT(LoadStill(std::string)));
+	connect(this, SIGNAL(Play()), cinemagraph_worker, SLOT(Play()));
+	connect(this, SIGNAL(Pause()), cinemagraph_worker, SLOT(Pause()));
+	connect(ui.preview_gl, SIGNAL(RequestNextFrame()), cinemagraph_worker, SLOT(RequestNextFrame()));
+	connect(cinemagraph_worker, &CinemagraphWorker::TextureReady, this, &Cinemagraph::OnTextureReady);
+	connect(cinemagraph_worker, &CinemagraphWorker::Thumbnail, this, &Cinemagraph::OnThumbnail);
+
+	// Transport connections
+	connect(ui.transport_bar, SIGNAL(TransportMouseRelease()), cinemagraph_worker, SLOT(Unpause()));
+	connect(ui.transport_bar, SIGNAL(TransportMousePress(int)), this, SLOT(OnTransportSeekStart(int)));
+	connect(ui.transport_bar, SIGNAL(TransportMouseMove(int)), cinemagraph_worker, SLOT(Seek(int)));
+	connect(this, SIGNAL(Seek(int)), cinemagraph_worker, SLOT(Seek(int)));
+
+	// Loop in/out connections
+	connect(this, SIGNAL(LoopOut()), cinemagraph_worker, SLOT(LoopOut()));
+	connect(this, SIGNAL(LoopIn()), cinemagraph_worker, SLOT(LoopIn()));
+	connect(cinemagraph_worker, SIGNAL(LoopOutPosition(int)), this, SLOT(LoopOutPosition(int)));
+	connect(cinemagraph_worker, SIGNAL(LoopInPosition(int)), this, SLOT(LoopInPosition(int)));
 
 	// Move the worker, context, and surface to the worker thread
 	cinemagraph_worker->moveToThread(cinemagraph_worker_thread);
@@ -63,6 +78,13 @@ void Cinemagraph::OpenGLInitialized()
 	// Start the worker thread. The Cinemagraph worker will create its own render thread that emits an OpenGL
 	// texture ID back to the main thread, triggering a redraw of the PreviewGL widget.
 	cinemagraph_worker_thread->start();
+}
+
+void Cinemagraph::OnTransportSeekStart(int pos)
+{
+	// Mouse-down on the Transport should pause the video _and_ seek to the requested position
+	emit Pause();
+	emit Seek(pos);
 }
 
 void Cinemagraph::OnThumbnail(cv::Mat thumb)
@@ -141,11 +163,12 @@ void Cinemagraph::on_new_mask_layer_clicked()
  * Signals that a new composition frame has been uploaded by the worker thread
  * into OpenGL and should be rendered by the PreviewGL widget.
  */
-void Cinemagraph::OnTextureReady(GLuint tid, int pos, int width, int height)
+void Cinemagraph::OnTextureReady(GLuint tid, int pos, int video_length, int width, int height)
 {
 	// Notify the PreviewGL widget that a new composition frame (texture) is ready
 	// to be rendered.
 	ui.preview_gl->TextureReady(tid, width, height);
+	ui.transport_bar->UpdatePosition(pos, video_length);
 }
 
 void Cinemagraph::on_play_button_clicked()
@@ -156,4 +179,24 @@ void Cinemagraph::on_play_button_clicked()
 void Cinemagraph::on_pause_button_clicked()
 {
 	emit Pause();
+}
+
+void Cinemagraph::on_loop_in_button_clicked()
+{
+	emit LoopIn();
+}
+
+void Cinemagraph::on_loop_out_button_clicked()
+{
+	emit LoopOut();
+}
+
+void Cinemagraph::LoopInPosition(int position)
+{
+	ui.transport_bar->SetLoopInPosition(position);
+}
+
+void Cinemagraph::LoopOutPosition(int position)
+{
+	ui.transport_bar->SetLoopOutPosition(position);
 }

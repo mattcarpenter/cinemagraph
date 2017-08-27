@@ -59,6 +59,20 @@
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="loop_in_button">
+            <property name="text">
+             <string>Set Loop In</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="loop_out_button">
+            <property name="text">
+             <string>Set Loop Out</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="horizontalSpacer_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -115,9 +129,11 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QTreeView" name="treeView">
+          <widget class="ProjectTree" name="project_tree">
            <property name="styleSheet">
-            <string notr="true">background-color: #222; </string>
+            <string notr="true">background-color: #222; 
+color: rgb(210,210,210);
+</string>
            </property>
           </widget>
          </item>
@@ -168,7 +184,7 @@
     <item>
      <widget class="Transport" name="transport_bar" native="true">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+       <sizepolicy hsizetype="Ignored" vsizetype="Maximum">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -186,7 +202,8 @@
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: #222;</string>
+       <string notr="true">background-color: #222;
+</string>
       </property>
      </widget>
     </item>
@@ -260,6 +277,11 @@
    <extends>QWidget</extends>
    <header>transport.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ProjectTree</class>
+   <extends>QTreeView</extends>
+   <header>projecttree.h</header>
   </customwidget>
  </customwidgets>
  <resources>
