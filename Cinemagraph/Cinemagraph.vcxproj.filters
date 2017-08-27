@@ -171,6 +171,9 @@
     <CustomBuild Include="TreeViewItemDelegate.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="ILayer.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_Cinemagraph.h">
@@ -189,9 +192,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CaptureFrame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ILayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

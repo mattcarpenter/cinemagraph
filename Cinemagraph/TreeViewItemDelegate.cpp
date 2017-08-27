@@ -4,6 +4,10 @@
 #include <qpainter.h>
 #include "ProjectTreeItem.h"
 #include <qstandarditemmodel.h>
+#include "Layer.h"
+#include "qdebug.h"
+
+Q_DECLARE_METATYPE(ILayer*);
 
 TreeViewItemDelegate::TreeViewItemDelegate(QObject *parent)
 	: QItemDelegate(parent)
@@ -16,6 +20,12 @@ void TreeViewItemDelegate::paint(QPainter * painter,
 {
 	// Data
 	QString text = index.model()->data(index, Qt::DisplayRole).toString();
+	QVariant variant = index.model()->data(index, Qt::UserRole + 1);
+	
+	if (variant.canConvert<ILayer*>())
+	{
+		
+	}
 
 	// Icons
 	QPixmap icon_light = QPixmap(":/Cinemagraph/Resources/eyeball_light.png");
