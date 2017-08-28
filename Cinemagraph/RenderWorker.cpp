@@ -60,7 +60,7 @@ void RenderWorker::Start()
 		// Try to keep this block executing every 40ms
 		// TODO - Use framerate of composition
 		this_thread::sleep_for(chrono::milliseconds(40 - duration));
-
+		qDebug() << "duration: " << duration;
 		current_texture_index++;
 		if (current_texture_index >= texture_count)
 		{

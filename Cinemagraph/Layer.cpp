@@ -164,13 +164,13 @@ int Layer::RenderNextFrame(cv::Mat &frame)
 			}
 		}
 		
-		Mat temp;
 		CaptureFrame *cf = capture_queue.front();
-		cf->GetFrame(temp);
-
-		if (this->GetVisible())
-			temp.copyTo(frame);
 		
+		if (this->GetVisible())
+			cf->GetFrame(frame);
+		else
+			this->GetBlank(frame);
+
 		captured_frame_pos = cf->GetFrameNumber();
 		// TODO - Process (mask, adjustments, etc)
 		
@@ -261,4 +261,16 @@ bool Layer::GetVisible()
 void Layer::SetVisible(bool v)
 {
 	visible = v;
+}
+
+void Layer::GetBlank(cv::Mat frame)
+{
+	if (blank.cols != frame.cols || blank.rows != frame.rows)
+	{
+		// Create new blank
+		blank = Mat(frame.rows, frame.cols, CV_8UC3, Scalar(0, 0, 0));
+	}
+	
+	blank.copyTo(frame);
+	
 }

@@ -32,6 +32,9 @@ public:
 private:
 	Layer *video_layer;
 	Layer *still_layer;
+
+	cv::Mat video_frame;
+
 	int start_frame = 0;
 	int end_frame = -1;
 	bool is_playing = false;

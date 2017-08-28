@@ -27,10 +27,12 @@ public:
 	void SetVisible(bool v);
 private:
 	void CaptureLoop();
+	void GetBlank(cv::Mat frame);
 
 	LayerType layer_type = LayerType::NONE;
 	
 	cv::Mat still;
+	cv::Mat blank;
 	cv::VideoCapture *video_capture = NULL;
 	
 	std::thread capture_thread;
