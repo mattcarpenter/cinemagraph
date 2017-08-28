@@ -132,8 +132,7 @@
           <widget class="ProjectTree" name="project_tree">
            <property name="styleSheet">
             <string notr="true">background-color: #222; 
-color: rgb(210,210,210);
-</string>
+color: rgb(210,210,210);</string>
            </property>
           </widget>
          </item>

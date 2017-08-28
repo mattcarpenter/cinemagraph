@@ -7,12 +7,6 @@
 #include "CaptureFrame.h"
 #include "ILayer.h"
 
-enum class LayerType {
-	VIDEO,
-	STILL,
-	NONE
-};
-
 class Layer : public ILayer
 {
 public:
@@ -27,8 +21,10 @@ public:
 	void SetEndFrame(int ef);
 	void SetPlaying(bool playing);
 	void Seek(int pos);
-	
+	LayerType GetType();
 	int RenderNextFrame(cv::Mat &frame);
+	bool GetVisible();
+	void SetVisible(bool v);
 private:
 	void CaptureLoop();
 
@@ -51,7 +47,7 @@ private:
 	int start_frame = 0;
 	int end_frame = -1;
 	bool is_playing = false;
-
+	bool visible = true;
 	int seek_to_frame = -1;
 };
 

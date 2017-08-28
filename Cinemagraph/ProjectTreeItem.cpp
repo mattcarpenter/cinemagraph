@@ -7,13 +7,14 @@ Q_DECLARE_METATYPE(ILayer*);
 ProjectTreeItem::ProjectTreeItem(QString text)
 	: QStandardItem(text)
 {
+	this->setEditable(false);
 }
 
 ProjectTreeItem::ProjectTreeItem(QString text, ILayer *layer)
 	: QStandardItem(text)
 {
 	this->target = layer;
-	
+	this->setEditable(false);
 	QVariant variant;
 	variant.setValue(layer);
 	this->setData(variant, Qt::UserRole + 1);

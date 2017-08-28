@@ -5,6 +5,7 @@
 #include "ProjectTreeItem.h"
 #include "ILayer.h"
 #include "TreeViewItemDelegate.h"
+#include <qevent.h>
 
 class ProjectTree : public QTreeView
 {
@@ -20,4 +21,7 @@ private:
 	QStandardItemModel *model;
 	ProjectTreeItem *root_item;
 	TreeViewItemDelegate *item_delegate;
+
+private slots:
+	void mousePressEvent(QMouseEvent *event);
 };

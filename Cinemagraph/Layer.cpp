@@ -242,3 +242,18 @@ void Layer::Seek(int pos)
 		return;
 	seek_to_frame = pos;
 }
+
+LayerType Layer::GetType()
+{
+	return layer_type;
+}
+
+bool Layer::GetVisible()
+{
+	return visible;
+}
+
+void Layer::SetVisible(bool v)
+{
+	visible = v;
+}
