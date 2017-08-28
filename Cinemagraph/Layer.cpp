@@ -142,7 +142,10 @@ int Layer::RenderNextFrame(cv::Mat &frame)
 
 	if (layer_type == LayerType::STILL)
 	{
-		still.copyTo(frame);
+		if (this->GetVisible())
+			still.copyTo(frame);
+		else
+			blank.copyTo(frame);
 		// TODO - Process (mask, adjustments, etc)
 
 		return 0;
@@ -272,5 +275,4 @@ void Layer::GetBlank(cv::Mat frame)
 	}
 	
 	blank.copyTo(frame);
-	
 }
