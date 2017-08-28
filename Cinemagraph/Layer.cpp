@@ -164,8 +164,13 @@ int Layer::RenderNextFrame(cv::Mat &frame)
 			}
 		}
 		
+		Mat temp;
 		CaptureFrame *cf = capture_queue.front();
-		cf->GetFrame(frame);
+		cf->GetFrame(temp);
+
+		if (this->GetVisible())
+			temp.copyTo(frame);
+		
 		captured_frame_pos = cf->GetFrameNumber();
 		// TODO - Process (mask, adjustments, etc)
 		

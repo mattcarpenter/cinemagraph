@@ -145,8 +145,7 @@ public:
         project_tree = new ProjectTree(sidebar);
         project_tree->setObjectName(QStringLiteral("project_tree"));
         project_tree->setStyleSheet(QLatin1String("background-color: #222; \n"
-"color: rgb(210,210,210);\n"
-"selection-background-color: rgba(142, 45, 197, 175);"));
+"color: rgb(210,210,210);"));
 
         verticalLayout->addWidget(project_tree);
 

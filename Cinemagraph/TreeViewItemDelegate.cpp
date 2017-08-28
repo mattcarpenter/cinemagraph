@@ -18,6 +18,8 @@ void TreeViewItemDelegate::paint(QPainter * painter,
 	const QStyleOptionViewItem & option,
 	const QModelIndex & index) const
 {
+	painter->save();
+
 	QPixmap icon_light = QPixmap(":/Cinemagraph/Resources/eyeball_light.png");
 	QPixmap icon_dark = QPixmap(":/Cinemagraph/Resources/eyeball_dark.png");
 
