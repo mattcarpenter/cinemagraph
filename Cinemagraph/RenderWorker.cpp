@@ -25,7 +25,6 @@ void RenderWorker::SetSeeking(bool seeking)
 void RenderWorker::Start()
 {
 	Mat frame;
-	Mat frame_flipped;
 
 	q_opengl_context->makeCurrent(q_surface);
 
@@ -35,7 +34,8 @@ void RenderWorker::Start()
 
 	while (1)
 	{
-		sem->wait(1); // wait for UI to request another frame
+		// wait for UI to request another frame
+		sem->wait(1);
 
 		int start_time = clock();
 		
@@ -45,10 +45,11 @@ void RenderWorker::Start()
 		// Get frame count
 		int video_length = composition->GetFrameCount();
 
-		flip(frame, frame_flipped, 0);
+		if (frame.cols > 0)
+			cv::flip(frame, frame, 0);
 
 		// Load into an OpenGL texture
-		PrepareTexture(frame_flipped, tid);
+		PrepareTexture(frame, tid);
 		
 		// Signal to the UI thread that the texture can now be applied to a quad
 		// and rendered by the PreviewGL widget.
@@ -126,7 +127,6 @@ void RenderWorker::matToTexture(cv::Mat &mat, GLenum minFilter, GLenum magFilter
 	// Set texture clamping method
 	f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapFilter);
 	f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapFilter);
-
 
 	f->glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
 	*/

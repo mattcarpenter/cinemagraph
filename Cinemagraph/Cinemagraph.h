@@ -19,6 +19,7 @@ public slots:
 	void on_pause_button_clicked();
 	void on_loop_in_button_clicked();
 	void on_loop_out_button_clicked();
+	void on_set_as_still_button_clicked();
 	void OpenGLInitialized();
 	void OnTextureReady(GLuint tid, int pos, int video_length, int width, int height);
 	void OnThumbnail(cv::Mat thumb);
@@ -41,4 +42,5 @@ signals:
 	void LoopIn();
 	void LoopOut();
 	void Seek(int pos);
+	void SetAsStill();
 };

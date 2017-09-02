@@ -4,6 +4,8 @@
 using namespace std;
 using namespace cv;
 
+static const cv::Mat g_mat = cv::Mat();
+
 Layer::Layer()
 {
 	capture_sem = new Semaphore(1);
@@ -84,9 +86,20 @@ bool Layer::LoadImage(string path)
 		layer_type = LayerType::STILL;
 		return true;
 	}
-	else
-		return false;
+	
+	return false;
+}
 
+bool Layer::LoadImage(cv::Mat frame)
+{
+	frame.copyTo(still);
+	if (still.rows > 0 && still.cols > 0)
+	{
+		layer_type = LayerType::STILL;
+		return true;
+	}
+	
+	return false;
 }
 
 /**
@@ -134,23 +147,31 @@ int Layer::GetFrameCount()
 		return -1;
 }
 
-int Layer::RenderNextFrame(cv::Mat &frame)
+void Layer::GetCurrentFrame(cv::Mat &frame)
+{
+	if (layer_type == LayerType::STILL)
+	{
+		still.copyTo(frame);
+	}
+	else if (layer_type == LayerType::VIDEO)
+	{
+		capture_queue.front()->CopyFrameTo(frame);
+	}
+}
+
+void Layer::RenderNextFrame(std::function<void(int, cv::Mat)> callback)
 {
 	// NOTE - Executed within RenderWorker thread
-
 	int captured_frame_pos = 0;
 
 	if (layer_type == LayerType::STILL)
 	{
 		if (this->GetVisible())
-			still.copyTo(frame);
+			return callback(0, still);
 		else
-			blank.copyTo(frame);
-		// TODO - Process (mask, adjustments, etc)
-
-		return 0;
+			return callback(0, blank);
 	}
-	else
+	else if (layer_type == LayerType::VIDEO)
 	{
 		// Block this render if the CaptureLoop is currently seeking
 		while (seek_to_frame > -1)
@@ -168,13 +189,13 @@ int Layer::RenderNextFrame(cv::Mat &frame)
 		}
 		
 		CaptureFrame *cf = capture_queue.front();
-		
-		if (this->GetVisible())
-			cf->GetFrame(frame);
-		else
-			this->GetBlank(frame);
-
 		captured_frame_pos = cf->GetFrameNumber();
+
+		if (this->GetVisible())
+			callback(captured_frame_pos, cf->GetFrame());
+		else
+			callback(captured_frame_pos, blank);
+
 		// TODO - Process (mask, adjustments, etc)
 		
 		if (is_playing)
@@ -185,10 +206,10 @@ int Layer::RenderNextFrame(cv::Mat &frame)
 			// notify capture thread that we've popped a frame
 			capture_sem->notify(2);
 		}
-
-		// TODO - figure out how to get the index of the last frame read from the front
-		// of the queue, not the index of the last frame captured from the video.
-		return captured_frame_pos;
+	}
+	else
+	{
+		callback(0, g_mat);
 	}
 }
 

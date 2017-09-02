@@ -36,6 +36,7 @@ public slots:
 	void Seek(int pos);
 	void LoopIn();
 	void LoopOut();
+	void SetAsStill();
 
 private:
 	Composition *composition;

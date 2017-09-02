@@ -11,9 +11,14 @@ CaptureFrame::~CaptureFrame()
 {
 }
 
-void CaptureFrame::GetFrame(cv::Mat &f)
+void CaptureFrame::CopyFrameTo(cv::Mat &f)
 {
 	this->frame.copyTo(f);
+}
+
+cv::Mat CaptureFrame::GetFrame()
+{
+	return this->frame;
 }
 
 int CaptureFrame::GetFrameNumber()

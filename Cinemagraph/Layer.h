@@ -15,6 +15,7 @@ public:
 
 	bool LoadVideo(std::string path, function<void(cv::Mat)> thumb_callback);
 	bool LoadImage(std::string path);
+	bool LoadImage(cv::Mat frame);
 	
 	int GetFrameCount();
 	void SetStartFrame(int sf);
@@ -22,13 +23,14 @@ public:
 	void SetPlaying(bool playing);
 	void Seek(int pos);
 	LayerType GetType();
-	int RenderNextFrame(cv::Mat &frame);
+	void RenderNextFrame(std::function<void(int, cv::Mat)> callback);
 	bool GetVisible();
 	void SetVisible(bool v);
+	void GetCurrentFrame(cv::Mat &frame);
 private:
 	void CaptureLoop();
 	void GetBlank(cv::Mat frame);
-
+	
 	LayerType layer_type = LayerType::NONE;
 	
 	cv::Mat still;

@@ -6,7 +6,8 @@ class CaptureFrame
 public:
 	CaptureFrame(cv::Mat f, int num);
 	~CaptureFrame();
-	void GetFrame(cv::Mat &f);
+	void CopyFrameTo(cv::Mat &f);
+	cv::Mat GetFrame();
 	int GetFrameNumber();
 private:
 	cv::Mat frame;

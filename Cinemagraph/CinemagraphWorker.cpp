@@ -99,6 +99,11 @@ void CinemagraphWorker::LoopOut()
 	emit LoopOutPosition(current_frame);
 }
 
+void CinemagraphWorker::SetAsStill()
+{
+	composition->SetCurrentVideoFrameAsStill();
+}
+
 Composition* CinemagraphWorker::GetComposition()
 {
 	return composition;

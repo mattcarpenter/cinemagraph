@@ -49,7 +49,7 @@ public:
     QVBoxLayout *verticalLayout;
     ProjectTree *project_tree;
     QPushButton *load_video;
-    QPushButton *pushButton;
+    QPushButton *set_as_still_button;
     QPushButton *load_still_frame;
     QHBoxLayout *horizontalLayout;
     QPushButton *new_mask_layer;
@@ -154,10 +154,10 @@ public:
 
         verticalLayout->addWidget(load_video);
 
-        pushButton = new QPushButton(sidebar);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
+        set_as_still_button = new QPushButton(sidebar);
+        set_as_still_button->setObjectName(QStringLiteral("set_as_still_button"));
 
-        verticalLayout->addWidget(pushButton);
+        verticalLayout->addWidget(set_as_still_button);
 
         load_still_frame = new QPushButton(sidebar);
         load_still_frame->setObjectName(QStringLiteral("load_still_frame"));
@@ -242,7 +242,7 @@ public:
         loop_in_button->setText(QApplication::translate("CinemagraphClass", "Set Loop In", Q_NULLPTR));
         loop_out_button->setText(QApplication::translate("CinemagraphClass", "Set Loop Out", Q_NULLPTR));
         load_video->setText(QApplication::translate("CinemagraphClass", "Load Video", Q_NULLPTR));
-        pushButton->setText(QApplication::translate("CinemagraphClass", "Set Current Frame as Still", Q_NULLPTR));
+        set_as_still_button->setText(QApplication::translate("CinemagraphClass", "Set Current Frame as Still", Q_NULLPTR));
         load_still_frame->setText(QApplication::translate("CinemagraphClass", "Load Still Frame", Q_NULLPTR));
         new_mask_layer->setText(QApplication::translate("CinemagraphClass", "New Mask Layer", Q_NULLPTR));
         pushButton_3->setText(QApplication::translate("CinemagraphClass", "New GND Layer", Q_NULLPTR));

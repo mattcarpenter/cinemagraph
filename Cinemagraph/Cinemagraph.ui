@@ -144,7 +144,7 @@ color: rgb(210,210,210);</string>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="set_as_still_button">
            <property name="text">
             <string>Set Current Frame as Still</string>
            </property>

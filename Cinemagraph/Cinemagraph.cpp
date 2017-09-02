@@ -54,6 +54,7 @@ void Cinemagraph::OpenGLInitialized()
 	connect(this, SIGNAL(LoadStill(std::string)), cinemagraph_worker, SLOT(LoadStill(std::string)));
 	connect(this, SIGNAL(Play()), cinemagraph_worker, SLOT(Play()));
 	connect(this, SIGNAL(Pause()), cinemagraph_worker, SLOT(Pause()));
+	connect(this, SIGNAL(SetAsStill()), cinemagraph_worker, SLOT(SetAsStill()));
 	connect(ui.preview_gl, SIGNAL(RequestNextFrame()), cinemagraph_worker, SLOT(RequestNextFrame()));
 	connect(cinemagraph_worker, &CinemagraphWorker::TextureReady, this, &Cinemagraph::OnTextureReady);
 	connect(cinemagraph_worker, &CinemagraphWorker::Thumbnail, this, &Cinemagraph::OnThumbnail);
@@ -169,6 +170,12 @@ void Cinemagraph::OnTextureReady(GLuint tid, int pos, int video_length, int widt
 	// to be rendered.
 	ui.preview_gl->TextureReady(tid, width, height);
 	ui.transport_bar->UpdatePosition(pos, video_length);
+	ui.project_tree->update();
+}
+
+void Cinemagraph::on_set_as_still_button_clicked()
+{
+	emit SetAsStill();
 }
 
 void Cinemagraph::on_play_button_clicked()
