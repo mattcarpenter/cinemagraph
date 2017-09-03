@@ -64,16 +64,6 @@ int Composition::Render(Mat &target)
 			// Do we have a video frame and a still frame?
 			if (still.rows > 0 && frame.rows > 0) {
 
-				// TODO - don't need any of this shit; make it go away.
-				if (mask.cols == 0)
-				{
-					mask = Mat(still.rows, still.cols, CV_8UC1, Scalar(0));
-					rectangle(mask, Rect(20, 20, 200, 200), Scalar(255), -1);
-					for (int z = 220; z < 220 + 255; z++) {
-						line(mask, Point(z, 20), Point(z, 220), Scalar(255-(z - 220)));
-					}
-				}
-
 				// Begin hardware-accelerated alpha blending of video frame and still frame
 				
 				// Initialize GpuMat vectors to store individual channel data for the frame
@@ -83,6 +73,7 @@ int Composition::Render(Mat &target)
 				std::vector<GpuMat> gpu_frame_channels;
 				gpu_frame.upload(frame);
 				gpu_still.upload(still);
+				UpdateMask();
 				gpu_mask.upload(mask);
 
 				// Convert video frame to 8UC4 and give it an all-white mask
@@ -129,6 +120,37 @@ int Composition::Render(Mat &target)
 	});
 
 	return video_pos;
+}
+
+/**
+ * Updates the member mask variable with a composite of all mask layers
+ */
+void Composition::UpdateMask()
+{
+	bool initialized = false;
+
+	// TODO - Don't re-generate a composite mask if none of the mask layers
+	//        have been flagged as dirty.
+	
+	// Ensure our mask has proper dimensions
+	if (mask.cols != GetWidth() || mask.rows != GetHeight())
+	{
+		mask = Mat::zeros(GetHeight(), GetWidth(), CV_8UC1);
+	}
+	
+	for (auto &m : masks)
+	{
+		if (!initialized)
+		{
+			// overwrite target with the first mask
+			m->GetMat().copyTo(mask);
+			initialized = true;
+		}
+		else
+		{
+			cv::bitwise_or(mask, m->GetMat(), mask);
+		}
+	}
 }
 
 int Composition::GetFrameCount()

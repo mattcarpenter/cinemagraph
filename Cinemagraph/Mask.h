@@ -11,12 +11,11 @@ public:
 
 	bool GetVisible();
 	void SetVisible(bool v);
+	cv::Mat GetMat();
 	LayerType GetType();
 
 private:
 	std::string name;
 	bool visible = true;
 	cv::Mat mask;
-
 };
-

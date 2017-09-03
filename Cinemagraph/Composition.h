@@ -36,11 +36,15 @@ public:
 	Layer* GetStillLayer();
 
 private:
+
+	void UpdateMask();
+
 	Layer *video_layer;
 	Layer *still_layer;
 
 	cv::Mat video_frame;
 
+	// Pre-allocated space for a merged mask
 	cv::Mat mask;
 
 	int start_frame = 0;

@@ -157,7 +157,11 @@ void Cinemagraph::on_new_mask_layer_button_clicked()
 	int width = cinemagraph_worker->GetComposition()->GetWidth();
 	int height = cinemagraph_worker->GetComposition()->GetHeight();
 
-	
+	if (!width || !height)
+		return;
+
+	Mask *m = new Mask(width, height, "Mask");
+	cinemagraph_worker->GetComposition()->AddMask(m);
 }
 
 /**
