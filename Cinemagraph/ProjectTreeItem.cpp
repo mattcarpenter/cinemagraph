@@ -1,6 +1,7 @@
 #include "ProjectTreeItem.h"
 #include "qvariant.h"
 #include "qdebug.h"
+#include <qmenu.h>
 
 Q_DECLARE_METATYPE(ILayer*);
 

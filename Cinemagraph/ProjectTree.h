@@ -25,4 +25,9 @@ private:
 
 private slots:
 	void mousePressEvent(QMouseEvent *event);
+	void ContextMenu(QPoint point);
+	void Delete();
+
+signals:
+	void DeleteLayer(ILayer* layer);
 };

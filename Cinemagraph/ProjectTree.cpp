@@ -4,6 +4,7 @@
 #include "ILayer.h"
 #include <qdebug.h>
 #include <qstring.h>
+#include <qmenu.h>
 
 Q_DECLARE_METATYPE(ILayer*);
 
@@ -19,6 +20,9 @@ ProjectTree::ProjectTree(QWidget *parent)
 	this->setModel(model);
 	this->setHeaderHidden(true);
 	this->expandAll();
+
+	this->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(ContextMenu(QPoint)));
 }
 
 ProjectTree::~ProjectTree()
@@ -104,4 +108,46 @@ void ProjectTree::mousePressEvent(QMouseEvent *event)
 
 	this->update();
 	QTreeView::mousePressEvent(event);
+}
+
+void ProjectTree::ContextMenu(QPoint point)
+{
+	QMenu *menu = new QMenu;
+	QModelIndex index = this->currentIndex();
+	QVariant variant = index.model()->data(index, Qt::UserRole + 1);
+	if (variant.canConvert<ILayer*>())
+	{
+		ILayer *layer = variant.value<ILayer*>();
+		if (layer->GetType() == LayerType::MASK)
+		{
+			menu->addAction(QString("Delete"), this, SLOT(Delete()));
+			menu->exec(QCursor::pos());
+		}
+	}
+}
+
+/**
+ * Deletes a mask layer from the video
+ */
+void ProjectTree::Delete()
+{
+	// TODO - Fix. This kind of smells because we're filtering down to the video layer's
+	//        children so that index.row() makes sense. Ideally this method would be generic
+	//        enough to emit a delete event for any applicable layer selected in the QTreeView.
+
+	QModelIndex index = this->currentIndex();
+	QVariant variant = index.model()->data(index, Qt::UserRole + 1);
+	if (variant.canConvert<ILayer*>())
+	{
+		ILayer *layer = variant.value<ILayer*>();
+		for (int i = 0; i < root_item->rowCount(); i++)
+		{
+			ProjectTreeItem* c = (ProjectTreeItem*)root_item->child(i);
+			if (c->GetTarget()->GetType() == LayerType::VIDEO)
+			{
+				c->removeRow(index.row());
+				emit DeleteLayer(layer);
+			}
+		}
+	}
 }

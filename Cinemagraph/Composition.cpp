@@ -237,3 +237,24 @@ void Composition::SetCurrentVideoFrameAsStill()
 	gpu_dest.download(still);
 	still_layer->LoadImage(still);
 }
+
+void Composition::DeleteLayer(ILayer* layer)
+{
+	// TODO - Enhance to support the deletion of any layer type.
+	//        Presently, this only matches against mask layers.
+
+	for (auto m : masks)
+	{
+		if (layer == m)
+		{
+			masks.erase(std::remove(masks.begin(), masks.end(), m), masks.end());
+			break;
+		}
+	}
+
+	// If no masks remain, blank out the composite mask member variable
+	if (!masks.size())
+	{
+		mask = Mat::zeros(GetHeight(), GetWidth(), CV_8UC1);
+	}
+}

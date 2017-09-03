@@ -7,6 +7,7 @@ Q_DECLARE_METATYPE(std::string);
 Q_DECLARE_METATYPE(cv::Mat);
 Q_DECLARE_METATYPE(QOpenGLContext*);
 Q_DECLARE_METATYPE(GLuint);
+Q_DECLARE_METATYPE(ILayer*);
 
 using namespace cv;
 
@@ -19,6 +20,7 @@ Cinemagraph::Cinemagraph(QWidget *parent)
 	qRegisterMetaType<cv::Mat>("cv::Mat&");
 	qRegisterMetaType<QOpenGLContext*>("QOpenGLContext*");
 	qRegisterMetaType<GLuint>("GLuint");
+	qRegisterMetaType<ILayer*>("ILayer*");
 }
 
 /**
@@ -70,6 +72,9 @@ void Cinemagraph::OpenGLInitialized()
 	connect(this, SIGNAL(LoopIn()), cinemagraph_worker, SLOT(LoopIn()));
 	connect(cinemagraph_worker, SIGNAL(LoopOutPosition(int)), this, SLOT(LoopOutPosition(int)));
 	connect(cinemagraph_worker, SIGNAL(LoopInPosition(int)), this, SLOT(LoopInPosition(int)));
+
+	// Project Tree connections
+	qDebug() << connect(ui.project_tree, SIGNAL(DeleteLayer(ILayer*)), cinemagraph_worker, SLOT(DeleteLayer(ILayer*)));
 
 	// Move the worker, context, and surface to the worker thread
 	cinemagraph_worker->moveToThread(cinemagraph_worker_thread);

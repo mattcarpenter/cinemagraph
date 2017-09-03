@@ -37,6 +37,7 @@ public slots:
 	void LoopIn();
 	void LoopOut();
 	void SetAsStill();
+	void DeleteLayer(ILayer* layer);
 
 private:
 	Composition *composition;

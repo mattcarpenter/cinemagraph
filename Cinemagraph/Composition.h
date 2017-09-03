@@ -31,6 +31,7 @@ public:
 	void AddMask(Mask* mask);
 	int GetWidth();
 	int GetHeight();
+	void DeleteLayer(ILayer* layer);
 
 	Layer* GetVideoLayer();
 	Layer* GetStillLayer();

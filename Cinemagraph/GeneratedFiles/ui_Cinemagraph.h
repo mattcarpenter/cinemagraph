@@ -144,6 +144,7 @@ public:
         verticalLayout->setContentsMargins(0, 0, 0, 0);
         project_tree = new ProjectTree(sidebar);
         project_tree->setObjectName(QStringLiteral("project_tree"));
+        project_tree->setContextMenuPolicy(Qt::CustomContextMenu);
         project_tree->setStyleSheet(QLatin1String("background-color: #222; \n"
 "color: rgb(210,210,210);"));
 

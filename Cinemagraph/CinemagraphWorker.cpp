@@ -108,3 +108,8 @@ Composition* CinemagraphWorker::GetComposition()
 {
 	return composition;
 }
+
+void CinemagraphWorker::DeleteLayer(ILayer* layer)
+{
+	composition->DeleteLayer(layer);
+}

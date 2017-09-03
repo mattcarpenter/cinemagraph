@@ -130,6 +130,9 @@
          </property>
          <item>
           <widget class="ProjectTree" name="project_tree">
+           <property name="contextMenuPolicy">
+            <enum>Qt::CustomContextMenu</enum>
+           </property>
            <property name="styleSheet">
             <string notr="true">background-color: #222; 
 color: rgb(210,210,210);</string>
