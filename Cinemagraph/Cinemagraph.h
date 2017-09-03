@@ -14,7 +14,7 @@ public:
 public slots:
 	void on_load_video_clicked();
 	void on_load_still_clicked();
-	void on_new_mask_layer_clicked();
+	void on_new_mask_layer_button_clicked();
 	void on_play_button_clicked();
 	void on_pause_button_clicked();
 	void on_loop_in_button_clicked();

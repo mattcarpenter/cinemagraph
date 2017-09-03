@@ -52,7 +52,7 @@ public:
     QPushButton *set_as_still_button;
     QPushButton *load_still_frame;
     QHBoxLayout *horizontalLayout;
-    QPushButton *new_mask_layer;
+    QPushButton *new_mask_layer_button;
     QPushButton *pushButton_3;
     Transport *transport_bar;
     QMenuBar *menuBar;
@@ -167,10 +167,10 @@ public:
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        new_mask_layer = new QPushButton(sidebar);
-        new_mask_layer->setObjectName(QStringLiteral("new_mask_layer"));
+        new_mask_layer_button = new QPushButton(sidebar);
+        new_mask_layer_button->setObjectName(QStringLiteral("new_mask_layer_button"));
 
-        horizontalLayout->addWidget(new_mask_layer);
+        horizontalLayout->addWidget(new_mask_layer_button);
 
         pushButton_3 = new QPushButton(sidebar);
         pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
@@ -244,7 +244,7 @@ public:
         load_video->setText(QApplication::translate("CinemagraphClass", "Load Video", Q_NULLPTR));
         set_as_still_button->setText(QApplication::translate("CinemagraphClass", "Set Current Frame as Still", Q_NULLPTR));
         load_still_frame->setText(QApplication::translate("CinemagraphClass", "Load Still Frame", Q_NULLPTR));
-        new_mask_layer->setText(QApplication::translate("CinemagraphClass", "New Mask Layer", Q_NULLPTR));
+        new_mask_layer_button->setText(QApplication::translate("CinemagraphClass", "New Mask Layer", Q_NULLPTR));
         pushButton_3->setText(QApplication::translate("CinemagraphClass", "New GND Layer", Q_NULLPTR));
         menuFile->setTitle(QApplication::translate("CinemagraphClass", "File", Q_NULLPTR));
         menuEdit->setTitle(QApplication::translate("CinemagraphClass", "Edit", Q_NULLPTR));

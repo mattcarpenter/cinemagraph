@@ -36,6 +36,9 @@ bool Layer::LoadVideo(string path, function<void(cv::Mat)> thumb_callback)
 	// Counts the number of frames, generates thumbnails, etc.
 	if (result = video_capture->read(frame))
 	{
+		width = frame.cols;
+		height = frame.rows;
+
 		// PASS 1: Count frames
 		video_capture_frame_count = 1;
 		while (video_capture->read(frame))
@@ -130,6 +133,16 @@ void Layer::SetEndFrame(int ef)
 void Layer::SetPlaying(bool playing)
 {
 	is_playing = playing;
+}
+
+int Layer::GetWidth()
+{
+	return (layer_type == LayerType::STILL ? still.cols : width);
+}
+
+int Layer::GetHeight()
+{
+	return (layer_type == LayerType::STILL ? still.rows : height);
 }
 
 /**

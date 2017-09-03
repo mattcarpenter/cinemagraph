@@ -152,9 +152,12 @@ void Cinemagraph::on_load_still_clicked()
  *
  * Fired when the `New Mask Layer` button is clicked
  */
-void Cinemagraph::on_new_mask_layer_clicked()
+void Cinemagraph::on_new_mask_layer_button_clicked()
 {	
-	//emit Test();
+	int width = cinemagraph_worker->GetComposition()->GetWidth();
+	int height = cinemagraph_worker->GetComposition()->GetHeight();
+
+	
 }
 
 /**

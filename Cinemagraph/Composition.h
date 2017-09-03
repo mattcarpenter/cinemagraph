@@ -29,6 +29,8 @@ public:
 	void Seek(int pos);
 	void SetCurrentVideoFrameAsStill();
 	void AddMask(Mask* mask);
+	int GetWidth();
+	int GetHeight();
 
 	Layer* GetVideoLayer();
 	Layer* GetStillLayer();

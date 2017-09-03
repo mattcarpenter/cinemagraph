@@ -27,6 +27,8 @@ public:
 	bool GetVisible();
 	void SetVisible(bool v);
 	void GetCurrentFrame(cv::Mat &frame);
+	int GetWidth();
+	int GetHeight();
 private:
 	void CaptureLoop();
 	void GetBlank(cv::Mat frame);
@@ -53,5 +55,8 @@ private:
 	bool is_playing = false;
 	bool visible = true;
 	int seek_to_frame = -1;
+
+	int width = 0;
+	int height = 0;
 };
 

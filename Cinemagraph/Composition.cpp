@@ -32,6 +32,16 @@ void Composition::AddMask(Mask* mask)
 	masks.push_back(mask);
 }
 
+int Composition::GetWidth()
+{
+	return std::max(video_layer->GetWidth(), still_layer->GetWidth());
+}
+
+int Composition::GetHeight()
+{
+	return std::max(video_layer->GetHeight(), still_layer->GetHeight());
+}
+
 int Composition::Render(Mat &target)
 {
 	int video_pos = 0;
