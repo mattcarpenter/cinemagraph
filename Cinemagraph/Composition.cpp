@@ -27,12 +27,25 @@ bool Composition::LoadStill(string path)
 	return still_layer->LoadImage(path);
 }
 
+void Composition::AddMask(Mask* mask)
+{
+	masks.push_back(mask);
+}
+
 int Composition::Render(Mat &target)
 {
 	int video_pos = 0;
-	// NOTE - Executed within RenderWorker thread
-	// TODO - Render still layer and blend with video
 	
+	// NOTE - This is executed by RenderWorker thread
+	//
+	// TODO - These callback functions smell. I wanted to avoid declaring
+	//        cv::Mats within this function scope for performance reasons
+	//        but I suspect something like the following would effectively
+	//        be the same in terms of performance:
+	//			cv::Mat frame = video_layer->RenderNextFrame();
+	//        Keep in mind, the RenderNextFrame() method must also give us
+	//        the position (frame number). Yeah, this smells too.
+
 	video_layer->RenderNextFrame([&](int pos, cv::Mat frame) -> void {
 		video_pos = pos;
 
@@ -41,30 +54,42 @@ int Composition::Render(Mat &target)
 			// Do we have a video frame and a still frame?
 			if (still.rows > 0 && frame.rows > 0) {
 
-				// TODO - mask should live in the video layer
+				// TODO - don't need any of this shit; make it go away.
 				if (mask.cols == 0)
 				{
-					mask = Mat(still.rows, still.cols, CV_8UC1, Scalar(255));
-					rectangle(mask, Rect(20, 20, 200, 200), Scalar(0), -1);
+					mask = Mat(still.rows, still.cols, CV_8UC1, Scalar(0));
+					rectangle(mask, Rect(20, 20, 200, 200), Scalar(255), -1);
 					for (int z = 220; z < 220 + 255; z++) {
-						line(mask, Point(z, 20), Point(z, 220), Scalar(z - 220));
+						line(mask, Point(z, 20), Point(z, 220), Scalar(255-(z - 220)));
 					}
 				}
 
-				// Upload images to GPU
+				// Begin hardware-accelerated alpha blending of video frame and still frame
+				
+				// Initialize GpuMat vectors to store individual channel data for the frame
+				// and still, then upload our 8UC3 images to the GPU.
+				std::vector<GpuMat> gpu_dest_channels;
+				std::vector<GpuMat> gpu_still_channels;
+				std::vector<GpuMat> gpu_frame_channels;
 				gpu_frame.upload(frame);
 				gpu_still.upload(still);
 				gpu_mask.upload(mask);
 
-				// Convert video frame to 8UC4 and use the mask as the alpha channel
-				std::vector<GpuMat> gpu_frame_channels;
-				std::vector<GpuMat> gpu_dest_channels;
+				// Convert video frame to 8UC4 and give it an all-white mask
 				cuda::split(gpu_frame, gpu_frame_channels);
-				gpu_frame_channels.push_back(gpu_mask);
+				if (gpu_frame_mask.cols != frame.cols || gpu_frame_mask.rows != frame.cols)
+					gpu_frame_mask = GpuMat(frame.rows, frame.cols, CV_8UC1, Scalar(255));
+				gpu_frame_channels.push_back(gpu_frame_mask);
 				cuda::merge(gpu_frame_channels, gpu_frame_with_alpha);
 
+				// Replace the still image alpha channel with the mask
+				cuda::split(gpu_still, gpu_still_channels);
+				gpu_still_channels.pop_back();
+				gpu_still_channels.push_back(gpu_mask);
+				cuda::merge(gpu_still_channels, gpu_still);
+
 				// Compose the video frame and still frame
-				cuda::alphaComp(gpu_frame_with_alpha, gpu_still, gpu_dest_with_alpha, ALPHA_OVER);
+				cuda::alphaComp(gpu_still, gpu_frame_with_alpha, gpu_dest_with_alpha, ALPHA_OVER);
 				
 				// Drop the alpha channel from the blended image
 				cuda::split(gpu_dest_with_alpha, gpu_dest_channels);
@@ -146,19 +171,27 @@ Layer* Composition::GetStillLayer()
 
 void Composition::SetCurrentVideoFrameAsStill()
 {
+	// TODO - Don't use the GPU for this operation. It only happens
+	//		  once during a user's workflow and it'll just make it
+	//        more difficult to make hardware acceleration an
+	//        optional feature later on.
+
 	Mat still;
 	video_layer->GetCurrentFrame(still);
 	
 	// Convert to 8CU4
+	// First, create an all-white mask
 	GpuMat gpu_still(still);
 	GpuMat gpu_mask(still.rows, still.cols, CV_8UC1, Scalar(255));
 	GpuMat gpu_dest;
 
-	// convert frame to 8UC4
+	// Merge RGB channels with Alpha
 	std::vector<GpuMat> gpu_still_channels;
 	cuda::split(gpu_still, gpu_still_channels);
 	gpu_still_channels.push_back(gpu_mask);
 	cuda::merge(gpu_still_channels, gpu_dest);
+
+	// Download 8CU4 from the GPU
 	gpu_dest.download(still);
 	still_layer->LoadImage(still);
 }

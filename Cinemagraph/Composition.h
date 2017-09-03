@@ -5,6 +5,7 @@
 #include <thread>
 #include <queue>
 #include "Layer.h"
+#include "Mask.h"
 #include <opencv2/cudaimgproc.hpp>
 using namespace std;
 using namespace cv::cuda;
@@ -27,6 +28,7 @@ public:
 	void SetPlaying(bool playing);
 	void Seek(int pos);
 	void SetCurrentVideoFrameAsStill();
+	void AddMask(Mask* mask);
 
 	Layer* GetVideoLayer();
 	Layer* GetStillLayer();
@@ -43,9 +45,13 @@ private:
 	int end_frame = -1;
 	bool is_playing = false;
 
+	std::vector<Mask*> masks;
+
 	GpuMat gpu_frame;
 	GpuMat gpu_still;
 	GpuMat gpu_mask;
+	GpuMat gpu_frame_mask;
+	GpuMat gpu_still_with_alpha;
 	GpuMat gpu_frame_with_alpha;
 	GpuMat gpu_dest_with_alpha;
 	GpuMat gpu_dest;

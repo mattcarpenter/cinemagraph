@@ -6,7 +6,7 @@ class Mask :
 	public ILayer
 {
 public:
-	Mask(int width, int height);
+	Mask(int width, int height, std::string mask_name);
 	~Mask();
 
 	bool GetVisible();
@@ -14,7 +14,9 @@ public:
 	LayerType GetType();
 
 private:
+	std::string name;
 	bool visible = true;
 	cv::Mat mask;
+
 };
 
