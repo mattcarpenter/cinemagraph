@@ -3,6 +3,7 @@
 #include <QStandardItemModel>
 #include "ILayer.h"
 #include <qdebug.h>
+#include <qstring.h>
 
 Q_DECLARE_METATYPE(ILayer*);
 
@@ -22,6 +23,22 @@ ProjectTree::ProjectTree(QWidget *parent)
 
 ProjectTree::~ProjectTree()
 {
+}
+
+void ProjectTree::AddMask(ILayer *layer)
+{
+	ProjectTreeItem *mask_item = new ProjectTreeItem(QString::fromStdString(layer->GetName()), layer);
+
+	for (int i = 0; i < root_item->rowCount(); i++)
+	{
+		//ProjectTreeItem* c = qobject_cast<ProjectTreeItem*>(root_item->takeRow(i));
+		ProjectTreeItem* c = (ProjectTreeItem*)root_item->child(i);
+		if (c->GetTarget()->GetType() == LayerType::VIDEO)
+		{
+			c->appendRow(mask_item);
+		}
+	}
+	this->expandAll();
 }
 
 void ProjectTree::AddVideoLayer(ILayer *layer)

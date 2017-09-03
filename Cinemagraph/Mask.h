@@ -13,7 +13,7 @@ public:
 	void SetVisible(bool v);
 	bool GetHighlighted();
 	void SetHighlighted(bool h);
-
+	std::string GetName();
 	cv::Mat GetMat();
 	LayerType GetType();
 

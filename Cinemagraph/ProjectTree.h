@@ -15,6 +15,7 @@ public:
 	ProjectTree(QWidget *parent);
 	void AddVideoLayer(ILayer *layer);
 	void AddStillLayer(ILayer *layer);
+	void AddMask(ILayer *layer);
 	~ProjectTree();
 
 private:

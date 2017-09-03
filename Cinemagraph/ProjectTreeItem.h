@@ -14,7 +14,7 @@ public:
 	void AddVideoLayer();
 	void AddStillLayer();
 	~ProjectTreeItem();
-
+	ILayer* GetTarget();
 private:
 	ILayer *target;
 };

@@ -162,6 +162,7 @@ void Cinemagraph::on_new_mask_layer_button_clicked()
 
 	Mask *m = new Mask(width, height, "Mask");
 	cinemagraph_worker->GetComposition()->AddMask(m);
+	ui.project_tree->AddMask(m);
 }
 
 /**

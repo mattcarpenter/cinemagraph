@@ -23,3 +23,8 @@ ProjectTreeItem::ProjectTreeItem(QString text, ILayer *layer)
 ProjectTreeItem::~ProjectTreeItem()
 {
 }
+
+ILayer* ProjectTreeItem::GetTarget()
+{
+	return target;
+}

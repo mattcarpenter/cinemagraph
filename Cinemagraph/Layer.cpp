@@ -319,3 +319,8 @@ bool Layer::GetHighlighted()
 {
 	return false;
 }
+
+std::string Layer::GetName()
+{
+	return "Layer";
+}

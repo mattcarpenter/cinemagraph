@@ -31,6 +31,7 @@ public:
 	void GetCurrentFrame(cv::Mat &frame);
 	int GetWidth();
 	int GetHeight();
+	std::string GetName();
 private:
 	void CaptureLoop();
 	void GetBlank(cv::Mat frame);
