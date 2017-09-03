@@ -26,6 +26,8 @@ public:
 	void RenderNextFrame(std::function<void(int, cv::Mat)> callback);
 	bool GetVisible();
 	void SetVisible(bool v);
+	void SetHighlighted(bool h);
+	bool GetHighlighted();
 	void GetCurrentFrame(cv::Mat &frame);
 	int GetWidth();
 	int GetHeight();

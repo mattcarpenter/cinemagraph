@@ -11,11 +11,18 @@ public:
 
 	bool GetVisible();
 	void SetVisible(bool v);
+	bool GetHighlighted();
+	void SetHighlighted(bool h);
+
 	cv::Mat GetMat();
 	LayerType GetType();
 
 private:
 	std::string name;
+	
 	bool visible = true;
+	bool highlighted = false;
+
 	cv::Mat mask;
+	cv::Mat blank;
 };

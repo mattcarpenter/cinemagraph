@@ -75,6 +75,7 @@ int Composition::Render(Mat &target)
 				gpu_still.upload(still);
 				UpdateMask();
 				gpu_mask.upload(mask);
+				gpu_mask_highlight.upload(mask_highlight);
 
 				// Convert video frame to 8UC4 and give it an all-white mask
 				cuda::split(gpu_frame, gpu_frame_channels);
@@ -87,6 +88,10 @@ int Composition::Render(Mat &target)
 				cuda::split(gpu_still, gpu_still_channels);
 				gpu_still_channels.pop_back();
 				gpu_still_channels.push_back(gpu_mask);
+				// Add highlights to still
+				cuda::addWeighted(gpu_still_channels.at(2),
+					1.0, gpu_mask_highlight, 0.25, 1.0, gpu_still_channels.at(2));
+				// Merge still channels into single 8CU4
 				cuda::merge(gpu_still_channels, gpu_still);
 
 				// Compose the video frame and still frame
@@ -136,6 +141,7 @@ void Composition::UpdateMask()
 	if (mask.cols != GetWidth() || mask.rows != GetHeight())
 	{
 		mask = Mat::zeros(GetHeight(), GetWidth(), CV_8UC1);
+		mask.copyTo(mask_highlight);
 	}
 	
 	for (auto &m : masks)
@@ -144,11 +150,15 @@ void Composition::UpdateMask()
 		{
 			// overwrite target with the first mask
 			m->GetMat().copyTo(mask);
+			if (m->GetHighlighted())
+				m->GetMat().copyTo(mask_highlight);
 			initialized = true;
 		}
 		else
 		{
 			cv::bitwise_or(mask, m->GetMat(), mask);
+			if (m->GetHighlighted())
+				cv::bitwise_or(mask_highlight, m->GetMat(), mask_highlight);
 		}
 	}
 }

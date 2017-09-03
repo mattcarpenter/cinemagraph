@@ -310,3 +310,12 @@ void Layer::GetBlank(cv::Mat frame)
 	
 	blank.copyTo(frame);
 }
+
+void Layer::SetHighlighted(bool h)
+{
+}
+
+bool Layer::GetHighlighted()
+{
+	return false;
+}

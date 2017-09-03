@@ -6,6 +6,7 @@ using namespace cv;
 Mask::Mask(int width, int height, std::string mask_name)
 {
 	mask = Mat(height, width, CV_8UC1, Scalar(0));
+	mask.copyTo(blank);
 	name = mask_name;
 
 	// TODO - Remove
@@ -30,6 +31,16 @@ bool Mask::GetVisible()
 	return visible;
 }
 
+void Mask::SetHighlighted(bool h)
+{
+	highlighted = h;
+}
+
+bool Mask::GetHighlighted()
+{
+	return highlighted;
+}
+
 LayerType Mask::GetType()
 {
 	return LayerType::MASK;
@@ -37,5 +48,5 @@ LayerType Mask::GetType()
 
 cv::Mat Mask::GetMat()
 {
-	return mask;
+	return visible ? mask : blank;
 }

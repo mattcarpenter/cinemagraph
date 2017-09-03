@@ -44,8 +44,9 @@ private:
 
 	cv::Mat video_frame;
 
-	// Pre-allocated space for a merged mask
+	// Pre-allocated space for masks and overlays
 	cv::Mat mask;
+	cv::Mat mask_highlight;
 
 	int start_frame = 0;
 	int end_frame = -1;
@@ -56,6 +57,7 @@ private:
 	GpuMat gpu_frame;
 	GpuMat gpu_still;
 	GpuMat gpu_mask;
+	GpuMat gpu_mask_highlight;
 	GpuMat gpu_frame_mask;
 	GpuMat gpu_still_with_alpha;
 	GpuMat gpu_frame_with_alpha;
