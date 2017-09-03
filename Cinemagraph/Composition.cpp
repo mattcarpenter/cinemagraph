@@ -213,10 +213,9 @@ Layer* Composition::GetStillLayer()
 
 void Composition::SetCurrentVideoFrameAsStill()
 {
-	// TODO - Don't use the GPU for this operation. It only happens
-	//		  once during a user's workflow and it'll just make it
-	//        more difficult to make hardware acceleration an
-	//        optional feature later on.
+	// TODO - Don't use the GPU for this operation. It only happens once during a user's
+	//        workflow and it'll just make it more difficult to make hardware acceleration
+	//        an optional feature later on.
 
 	Mat still;
 	video_layer->GetCurrentFrame(still);
@@ -240,8 +239,13 @@ void Composition::SetCurrentVideoFrameAsStill()
 
 void Composition::DeleteLayer(ILayer* layer)
 {
-	// TODO - Enhance to support the deletion of any layer type.
-	//        Presently, this only matches against mask layers.
+	// TODO - Enhance to support the deletion of any layer type. Presently, this only
+	//        matches against mask layers.
+	
+	// TODO - Make this thread safe. There's currently a race condition during which
+	//        we attempt to manipulate the masks vector while the render worker thread
+	//        is enumerating the masks and generating a composite for the still image's
+	//        alpha channel.
 
 	for (auto m : masks)
 	{
