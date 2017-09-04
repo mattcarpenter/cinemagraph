@@ -73,7 +73,11 @@ int Composition::Render(Mat &target)
 				std::vector<GpuMat> gpu_frame_channels;
 				gpu_frame.upload(frame);
 				gpu_still.upload(still);
+				
+				// Merge all mask layers into `mask` and `mask_highlight` before uploading
+				// the mask Mats to the GPU.
 				UpdateMask();
+				
 				gpu_mask.upload(mask);
 				gpu_mask_highlight.upload(mask_highlight);
 
@@ -137,14 +141,37 @@ void Composition::UpdateMask()
 	// TODO - Don't re-generate a composite mask if none of the mask layers
 	//        have been flagged as dirty.
 	
-	// Ensure our mask has proper dimensions
-	if (mask.cols != GetWidth() || mask.rows != GetHeight())
+	// Ensure our mask composition always has proper dimensions
+	if (mask.cols != GetWidth() || mask.rows != GetHeight()
+		|| masks.size() > 0)
 	{
 		mask = Mat::zeros(GetHeight(), GetWidth(), CV_8UC1);
 		mask.copyTo(mask_highlight);
 	}
+
+	// Loop through each mask and merge into `mask` and `mask_highlight`
+	for (int i = 0; i < masks.size(); i++)
+	{
+		Mask *m = masks.at(i);
+		cv::bitwise_or(mask, m->GetMat(), mask);
+		if (m->IsEditing())
+		{
+			cv::bitwise_or(mask, m->GetPreview(), mask);
+			cv::bitwise_or(mask, m->GetCommitted(), mask);
+		}
+
+		if (m->GetHighlighted())
+		{
+			cv::bitwise_or(mask_highlight, m->GetMat(), mask_highlight);
+			if (m->IsEditing())
+			{
+				cv::bitwise_or(mask_highlight, m->GetPreview(), mask_highlight);
+				cv::bitwise_or(mask_highlight, m->GetCommitted(), mask_highlight);
+			}
+		}
+	}
 	
-	for (auto &m : masks)
+	/*for (auto &m : masks)
 	{
 		if (!initialized)
 		{
@@ -162,7 +189,7 @@ void Composition::UpdateMask()
 			if (m->GetHighlighted())
 				cv::bitwise_or(mask_highlight, m->GetMat(), mask_highlight);
 		}
-	}
+	}*/
 }
 
 int Composition::GetFrameCount()

@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include "Composition.h"
+#include "MaskPainter.h"
 #include <opencv2/opencv.hpp>
 #include <qopenglfunctions.h>
 #include <qopenglfunctions_4_5_core.h>
@@ -12,7 +13,7 @@ class RenderWorker : public QObject, protected QOpenGLFunctions_4_5_Core
 	Q_OBJECT
 
 public:
-	RenderWorker(Composition *comp, QOpenGLContext *ctx, QSurface *sfc);
+	RenderWorker(Composition *comp, MaskPainter *mpainter, QOpenGLContext *ctx, QSurface *sfc);
 	~RenderWorker();
 	void SetSeeking(bool seeking);
 
@@ -25,6 +26,7 @@ private:
 	void matToTexture(cv::Mat &mat, GLenum minFilter, GLenum magFilter, GLenum wrapFilter, GLuint &tid);
 
 	Composition *composition;
+	MaskPainter *mask_painter;
 
 	QOpenGLContext *q_opengl_context;
 	QSurface *q_surface;

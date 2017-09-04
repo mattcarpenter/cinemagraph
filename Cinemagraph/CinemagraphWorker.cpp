@@ -10,6 +10,7 @@ CinemagraphWorker::CinemagraphWorker(QOpenGLContext *context, QOffscreenSurface 
 	q_opengl_context = context;
 	q_surface = surface;
 	composition = new Composition();
+	mask_painter = new MaskPainter(composition);
 }
 
 CinemagraphWorker::~CinemagraphWorker()
@@ -39,7 +40,7 @@ bool CinemagraphWorker::LoadStill(std::string path)
 void CinemagraphWorker::Initialize()
 {
 	render_worker_thread = new QThread;
-	render_worker = new RenderWorker(composition, q_opengl_context, q_surface);
+	render_worker = new RenderWorker(composition, mask_painter, q_opengl_context, q_surface);
 	
 	qDebug() << connect(render_worker_thread, SIGNAL(started()), render_worker, SLOT(Start()));
 	qDebug() << connect(render_worker, &RenderWorker::TextureReady, this, &CinemagraphWorker::OnTextureReady);
@@ -114,17 +115,29 @@ void CinemagraphWorker::DeleteLayer(ILayer* layer)
 	composition->DeleteLayer(layer);
 }
 
+void CinemagraphWorker::SelectLayer(ILayer* layer)
+{
+	if (layer->GetType() == LayerType::MASK)
+	{
+		mask_painter->AttachLayer((Mask*)layer);
+	}
+	else
+	{
+		mask_painter->DetachLayer();
+	}
+}
+
 void CinemagraphWorker::MouseDown(QPoint p)
 {
-	qDebug() << "mouse down";
+	mask_painter->MouseDown(p.x(), p.y());
 }
 
 void CinemagraphWorker::MouseMove(QPoint p)
 {
-	qDebug() << "mouse move";
+	mask_painter->MouseMove(p.x(), p.y());
 }
 
 void CinemagraphWorker::MouseUp(QPoint p)
 {
-	qDebug() << "mouse up";
+	mask_painter->MouseUp(p.x(), p.y());
 }

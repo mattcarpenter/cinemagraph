@@ -7,6 +7,8 @@ Mask::Mask(int width, int height, std::string mask_name)
 {
 	mask = Mat(height, width, CV_8UC1, Scalar(0));
 	mask.copyTo(blank);
+	mask.copyTo(preview);
+	mask.copyTo(committed);
 	name = mask_name;
 
 	// TODO - Remove
@@ -54,4 +56,24 @@ LayerType Mask::GetType()
 cv::Mat Mask::GetMat()
 {
 	return visible ? mask : blank;
+}
+
+cv::Mat Mask::GetPreview()
+{
+	return preview;
+}
+
+cv::Mat Mask::GetCommitted()
+{
+	return committed;
+}
+
+bool Mask::IsEditing()
+{
+	return is_editing;
+}
+
+void Mask::SetIsEditing(bool e)
+{
+	is_editing = e;
 }

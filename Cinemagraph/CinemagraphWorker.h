@@ -39,12 +39,14 @@ public slots:
 	void LoopOut();
 	void SetAsStill();
 	void DeleteLayer(ILayer* layer);
+	void SelectLayer(ILayer* layer);
 	void MouseDown(QPoint p);
 	void MouseUp(QPoint p);
 	void MouseMove(QPoint p);
 
 private:
 	Composition *composition;
+	MaskPainter *mask_painter;
 	
 	QOpenGLContext *q_opengl_context;
 	QOffscreenSurface *q_surface;

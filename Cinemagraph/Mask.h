@@ -16,6 +16,10 @@ public:
 	std::string GetName();
 	cv::Mat GetMat();
 	LayerType GetType();
+	cv::Mat GetPreview();
+	cv::Mat GetCommitted();
+	bool IsEditing();
+	void SetIsEditing(bool e);
 
 private:
 	std::string name;
@@ -25,4 +29,8 @@ private:
 
 	cv::Mat mask;
 	cv::Mat blank;
+	cv::Mat preview;
+	cv::Mat committed;
+
+	bool is_editing = false;
 };

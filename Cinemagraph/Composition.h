@@ -7,6 +7,7 @@
 #include "Layer.h"
 #include "Mask.h"
 #include <opencv2/cudaimgproc.hpp>
+
 using namespace std;
 using namespace cv::cuda;
 
@@ -32,7 +33,6 @@ public:
 	int GetWidth();
 	int GetHeight();
 	void DeleteLayer(ILayer* layer);
-
 	Layer* GetVideoLayer();
 	Layer* GetStillLayer();
 

@@ -30,4 +30,5 @@ private slots:
 
 signals:
 	void DeleteLayer(ILayer* layer);
+	void SelectLayer(ILayer* layer);
 };

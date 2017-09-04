@@ -80,7 +80,8 @@ void Cinemagraph::OpenGLInitialized()
 	connect(cinemagraph_worker, SIGNAL(LoopInPosition(int)), this, SLOT(LoopInPosition(int)));
 
 	// Project Tree connections
-	qDebug() << connect(ui.project_tree, SIGNAL(DeleteLayer(ILayer*)), cinemagraph_worker, SLOT(DeleteLayer(ILayer*)));
+	connect(ui.project_tree, SIGNAL(DeleteLayer(ILayer*)), cinemagraph_worker, SLOT(DeleteLayer(ILayer*)));
+	connect(ui.project_tree, SIGNAL(SelectLayer(ILayer*)), cinemagraph_worker, SLOT(SelectLayer(ILayer*)));
 
 	// Move the worker, context, and surface to the worker thread
 	cinemagraph_worker->moveToThread(cinemagraph_worker_thread);

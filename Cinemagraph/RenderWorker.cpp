@@ -5,12 +5,13 @@
 
 using namespace cv;
 
-RenderWorker::RenderWorker(Composition *comp, QOpenGLContext *ctx, QSurface *sfc)
+RenderWorker::RenderWorker(Composition *comp, MaskPainter *mpainter, QOpenGLContext *ctx, QSurface *sfc)
 {
 	composition = comp;
 	q_surface = sfc;
 	q_opengl_context = ctx;
 	sem = new Semaphore(1);
+	mask_painter = mpainter;
 }
 
 RenderWorker::~RenderWorker()
@@ -40,6 +41,7 @@ void RenderWorker::Start()
 		int start_time = clock();
 		
 		// Render the next composition frame
+
 		int video_pos = composition->Render(frame);
 
 		// Get frame count
@@ -61,7 +63,7 @@ void RenderWorker::Start()
 		// Try to keep this block executing every 40ms
 		// TODO - Use framerate of composition
 		this_thread::sleep_for(chrono::milliseconds(40 - duration));
-		//qDebug() << "duration: " << duration;
+		qDebug() << "duration: " << duration;
 		current_texture_index++;
 		if (current_texture_index >= texture_count)
 		{

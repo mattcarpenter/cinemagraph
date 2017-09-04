@@ -103,6 +103,8 @@ void ProjectTree::mousePressEvent(QMouseEvent *event)
 				layer->SetHighlighted(!layer->GetHighlighted());
 			}
 		}
+
+		emit SelectLayer(layer);
 	}
 
 	this->update();
