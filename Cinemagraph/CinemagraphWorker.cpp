@@ -113,3 +113,18 @@ void CinemagraphWorker::DeleteLayer(ILayer* layer)
 {
 	composition->DeleteLayer(layer);
 }
+
+void CinemagraphWorker::MouseDown(QPoint p)
+{
+	qDebug() << "mouse down";
+}
+
+void CinemagraphWorker::MouseMove(QPoint p)
+{
+	qDebug() << "mouse move";
+}
+
+void CinemagraphWorker::MouseUp(QPoint p)
+{
+	qDebug() << "mouse up";
+}

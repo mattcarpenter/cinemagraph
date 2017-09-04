@@ -87,6 +87,7 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(preview_gl->sizePolicy().hasHeightForWidth());
         preview_gl->setSizePolicy(sizePolicy);
+        preview_gl->setMouseTracking(true);
 
         pvw_trnsprt_btns->addWidget(preview_gl);
 

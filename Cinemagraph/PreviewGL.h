@@ -24,6 +24,8 @@ protected:
 private:
 	QPoint MouseToVideoPoint(QPoint mouse_point);
 	void mousePressEvent(QMouseEvent * event);
+	void mouseMoveEvent(QMouseEvent * event);
+	void mouseReleaseEvent(QMouseEvent * event);
 	cv::Rect GetDrawSize();
 	cv::Mat current_frame;
 	GLuint texture_id = 0;
@@ -32,4 +34,7 @@ private:
 signals:
 	void Initialized();
 	void RequestNextFrame();
+	void MouseDown(QPoint p);
+	void MouseMove(QPoint p);
+	void MouseUp(QPoint p);
 };

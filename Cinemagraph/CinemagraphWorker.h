@@ -8,6 +8,7 @@
 #include <qopenglfunctions_3_0.h>
 #include <qoffscreensurface.h>
 #include <RenderWorker.h>
+#include <qpoint.h>
 
 class CinemagraphWorker : public QObject, protected QOpenGLFunctions_3_0
 {
@@ -38,6 +39,9 @@ public slots:
 	void LoopOut();
 	void SetAsStill();
 	void DeleteLayer(ILayer* layer);
+	void MouseDown(QPoint p);
+	void MouseUp(QPoint p);
+	void MouseMove(QPoint p);
 
 private:
 	Composition *composition;

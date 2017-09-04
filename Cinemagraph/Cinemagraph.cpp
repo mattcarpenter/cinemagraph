@@ -2,12 +2,14 @@
 #include <qthread.h>
 #include <qdebug.h>
 #include <qfiledialog.h>
+#include <qpoint.h>
 
 Q_DECLARE_METATYPE(std::string);
 Q_DECLARE_METATYPE(cv::Mat);
 Q_DECLARE_METATYPE(QOpenGLContext*);
 Q_DECLARE_METATYPE(GLuint);
 Q_DECLARE_METATYPE(ILayer*);
+Q_DECLARE_METATYPE(QPoint);
 
 using namespace cv;
 
@@ -21,6 +23,7 @@ Cinemagraph::Cinemagraph(QWidget *parent)
 	qRegisterMetaType<QOpenGLContext*>("QOpenGLContext*");
 	qRegisterMetaType<GLuint>("GLuint");
 	qRegisterMetaType<ILayer*>("ILayer*");
+	qRegisterMetaType<QPoint>("QPoint");
 }
 
 /**
@@ -60,6 +63,9 @@ void Cinemagraph::OpenGLInitialized()
 	connect(ui.preview_gl, SIGNAL(RequestNextFrame()), cinemagraph_worker, SLOT(RequestNextFrame()));
 	connect(cinemagraph_worker, &CinemagraphWorker::TextureReady, this, &Cinemagraph::OnTextureReady);
 	connect(cinemagraph_worker, &CinemagraphWorker::Thumbnail, this, &Cinemagraph::OnThumbnail);
+	connect(ui.preview_gl, SIGNAL(MouseDown(QPoint)), cinemagraph_worker, SLOT(MouseDown(QPoint)));
+	connect(ui.preview_gl, SIGNAL(MouseMove(QPoint)), cinemagraph_worker, SLOT(MouseMove(QPoint)));
+	connect(ui.preview_gl, SIGNAL(MouseUp(QPoint)), cinemagraph_worker, SLOT(MouseUp(QPoint)));
 
 	// Transport connections
 	connect(ui.transport_bar, SIGNAL(TransportMouseRelease()), cinemagraph_worker, SLOT(Unpause()));

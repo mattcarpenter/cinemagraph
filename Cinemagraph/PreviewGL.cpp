@@ -106,7 +106,17 @@ cv::Rect PreviewGL::GetDrawSize()
 
 void PreviewGL::mousePressEvent(QMouseEvent * event)
 {
-	qDebug() << MouseToVideoPoint(event->pos());
+	emit MouseDown(MouseToVideoPoint(event->pos()));
+}
+
+void PreviewGL::mouseMoveEvent(QMouseEvent * event)
+{
+	emit MouseMove(MouseToVideoPoint(event->pos()));
+}
+
+void PreviewGL::mouseReleaseEvent(QMouseEvent * event)
+{
+	emit MouseUp(MouseToVideoPoint(event->pos()));
 }
 
 QPoint PreviewGL::MouseToVideoPoint(QPoint mouse_point)
