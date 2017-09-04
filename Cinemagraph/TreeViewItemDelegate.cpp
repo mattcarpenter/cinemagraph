@@ -20,8 +20,10 @@ void TreeViewItemDelegate::paint(QPainter * painter,
 {
 	painter->save();
 
-	QPixmap icon_light = QPixmap(":/Cinemagraph/Resources/eyeball_light.png");
-	QPixmap icon_dark = QPixmap(":/Cinemagraph/Resources/eyeball_dark.png");
+	QPixmap visible_light = QPixmap(":/Cinemagraph/Resources/eyeball_light.png");
+	QPixmap visible_dark = QPixmap(":/Cinemagraph/Resources/eyeball_dark.png");
+	QPixmap mask_light = QPixmap(":/Cinemagraph/Resources/mask_light.png");
+	QPixmap mask_dark = QPixmap(":/Cinemagraph/Resources/mask_dark.png");
 
 	drawBackground(painter, option, index);
 
@@ -41,9 +43,9 @@ void TreeViewItemDelegate::paint(QPainter * painter,
 			QPainter icons_painter(&icons);
 
 			if (layer->GetVisible())
-				icons_painter.drawPixmap(QRect(0, 0, 16, 16), icon_light);
+				icons_painter.drawPixmap(QRect(0, 0, 16, 16), visible_light);
 			else
-				icons_painter.drawPixmap(QRect(0, 0, 16, 16), icon_dark);
+				icons_painter.drawPixmap(QRect(0, 0, 16, 16), visible_dark);
 
 			// Options
 			QStyleOptionViewItem eyeball_option = option;
@@ -64,16 +66,8 @@ void TreeViewItemDelegate::paint(QPainter * painter,
 			icons.fill(Qt::transparent);
 			QPainter icons_painter(&icons);
 
-			if (layer->GetVisible())
-			{
-				icons_painter.drawPixmap(QRect(0, 0, 16, 16), icon_light);
-				icons_painter.drawPixmap(QRect(16, 0, 16, 16), icon_light);
-			}
-			else
-			{
-				icons_painter.drawPixmap(QRect(0, 0, 16, 16), icon_dark);
-				icons_painter.drawPixmap(QRect(16, 0, 16, 16), icon_dark);
-			}
+			icons_painter.drawPixmap(QRect(0, 0, 16, 16), layer->GetVisible() ? visible_light : visible_dark);
+			icons_painter.drawPixmap(QRect(16, 0, 16, 16), layer->GetHighlighted() ? mask_light : mask_dark);
 
 			// Options
 			QStyleOptionViewItem eyeball_option = option;

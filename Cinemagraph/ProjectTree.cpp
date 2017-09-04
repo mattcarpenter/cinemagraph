@@ -35,7 +35,6 @@ void ProjectTree::AddMask(ILayer *layer)
 
 	for (int i = 0; i < root_item->rowCount(); i++)
 	{
-		//ProjectTreeItem* c = qobject_cast<ProjectTreeItem*>(root_item->takeRow(i));
 		ProjectTreeItem* c = (ProjectTreeItem*)root_item->child(i);
 		if (c->GetTarget()->GetType() == LayerType::VIDEO)
 		{
@@ -101,7 +100,7 @@ void ProjectTree::mousePressEvent(QMouseEvent *event)
 			if (clicked_x >= (vrect.x() + 16) && clicked_x < (vrect.x() + 32))
 			{
 				// Toggle
-				layer->SetVisible(!layer->GetVisible());
+				layer->SetHighlighted(!layer->GetHighlighted());
 			}
 		}
 	}

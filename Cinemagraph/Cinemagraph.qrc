@@ -2,5 +2,7 @@
     <qresource prefix="/Cinemagraph">
         <file>Resources/eyeball_dark.png</file>
         <file>Resources/eyeball_light.png</file>
+        <file>Resources/mask_dark.png</file>
+        <file>Resources/mask_light.png</file>
     </qresource>
 </RCC>

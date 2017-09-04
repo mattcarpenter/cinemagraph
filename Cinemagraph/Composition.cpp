@@ -152,6 +152,8 @@ void Composition::UpdateMask()
 			m->GetMat().copyTo(mask);
 			if (m->GetHighlighted())
 				m->GetMat().copyTo(mask_highlight);
+			else
+				mask_highlight = Mat::zeros(GetHeight(), GetWidth(), CV_8UC1);
 			initialized = true;
 		}
 		else

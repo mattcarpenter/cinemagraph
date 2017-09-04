@@ -8,7 +8,7 @@ Mask::Mask(int width, int height, std::string mask_name)
 	mask = Mat(height, width, CV_8UC1, Scalar(0));
 	mask.copyTo(blank);
 	name = mask_name;
-	highlighted = true;
+
 	// TODO - Remove
 	mask = Mat(height, width, CV_8UC1, Scalar(0));
 	rectangle(mask, Rect(20, 20, 200, 200), Scalar(255), -1);
