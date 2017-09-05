@@ -153,6 +153,9 @@ void Composition::UpdateMask()
 	for (int i = 0; i < masks.size(); i++)
 	{
 		Mask *m = masks.at(i);
+		if (!m->GetVisible())
+			continue;
+
 		cv::bitwise_or(mask, m->GetMat(), mask);
 		if (m->IsEditing())
 		{
@@ -160,7 +163,7 @@ void Composition::UpdateMask()
 			cv::bitwise_or(mask, m->GetCommitted(), mask);
 		}
 
-		if (m->GetHighlighted())
+		if (m->GetHighlighted() && m->GetVisible())
 		{
 			cv::bitwise_or(mask_highlight, m->GetMat(), mask_highlight);
 			if (m->IsEditing())
@@ -170,26 +173,6 @@ void Composition::UpdateMask()
 			}
 		}
 	}
-	
-	/*for (auto &m : masks)
-	{
-		if (!initialized)
-		{
-			// overwrite target with the first mask
-			m->GetMat().copyTo(mask);
-			if (m->GetHighlighted())
-				m->GetMat().copyTo(mask_highlight);
-			else
-				mask_highlight = Mat::zeros(GetHeight(), GetWidth(), CV_8UC1);
-			initialized = true;
-		}
-		else
-		{
-			cv::bitwise_or(mask, m->GetMat(), mask);
-			if (m->GetHighlighted())
-				cv::bitwise_or(mask_highlight, m->GetMat(), mask_highlight);
-		}
-	}*/
 }
 
 int Composition::GetFrameCount()

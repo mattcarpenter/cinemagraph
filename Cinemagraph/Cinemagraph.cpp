@@ -3,6 +3,7 @@
 #include <qdebug.h>
 #include <qfiledialog.h>
 #include <qpoint.h>
+#include <qicon.h>
 
 Q_DECLARE_METATYPE(std::string);
 Q_DECLARE_METATYPE(cv::Mat);
@@ -24,6 +25,14 @@ Cinemagraph::Cinemagraph(QWidget *parent)
 	qRegisterMetaType<GLuint>("GLuint");
 	qRegisterMetaType<ILayer*>("ILayer*");
 	qRegisterMetaType<QPoint>("QPoint");
+
+	// Set up toolbar
+	QIcon i = QIcon(":/Cinemagraph/Resources/pencil.png");
+	QIcon i2 = QIcon(":/Cinemagraph/Resources/eraser.png");
+	QAction *action = new QAction(i, "wtf", this);
+	QAction *action2 = new QAction(i2, "wtf2", this);
+	ui.toolbar->addAction(action);
+	ui.toolbar->addAction(action2);
 }
 
 /**

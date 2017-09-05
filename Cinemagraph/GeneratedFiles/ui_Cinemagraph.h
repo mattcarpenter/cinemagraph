@@ -60,7 +60,7 @@ public:
     QMenu *menuEdit;
     QMenu *menuView;
     QMenu *menuHelp;
-    QToolBar *mainToolBar;
+    QToolBar *toolbar;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *CinemagraphClass)
@@ -215,12 +215,13 @@ public:
         menuHelp = new QMenu(menuBar);
         menuHelp->setObjectName(QStringLiteral("menuHelp"));
         CinemagraphClass->setMenuBar(menuBar);
-        mainToolBar = new QToolBar(CinemagraphClass);
-        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
-        mainToolBar->setEnabled(false);
-        mainToolBar->setMovable(false);
-        mainToolBar->setFloatable(false);
-        CinemagraphClass->addToolBar(Qt::TopToolBarArea, mainToolBar);
+        toolbar = new QToolBar(CinemagraphClass);
+        toolbar->setObjectName(QStringLiteral("toolbar"));
+        toolbar->setEnabled(false);
+        toolbar->setMovable(false);
+        toolbar->setIconSize(QSize(24, 24));
+        toolbar->setFloatable(false);
+        CinemagraphClass->addToolBar(Qt::TopToolBarArea, toolbar);
         statusBar = new QStatusBar(CinemagraphClass);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         CinemagraphClass->setStatusBar(statusBar);

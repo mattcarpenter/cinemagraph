@@ -4,5 +4,7 @@
         <file>Resources/eyeball_light.png</file>
         <file>Resources/mask_dark.png</file>
         <file>Resources/mask_light.png</file>
+        <file>Resources/eraser.png</file>
+        <file>Resources/pencil.png</file>
     </qresource>
 </RCC>

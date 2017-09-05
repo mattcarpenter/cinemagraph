@@ -102,6 +102,9 @@ void MaskPainter::AttachLayer(Mask* m)
 
 void MaskPainter::DetachLayer()
 {
+	if (target == NULL)
+		return;
+
 	Reset(target->GetMat().cols, target->GetMat().rows);
 	target->SetIsEditing(false);
 	target = NULL;
