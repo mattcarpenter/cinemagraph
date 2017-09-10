@@ -10,8 +10,6 @@ Mask::Mask(int width, int height, std::string mask_name)
 	mask.copyTo(preview);
 	mask.copyTo(committed);
 	name = mask_name;
-
-	mask = Mat(height, width, CV_8UC1, Scalar(0));
 }
 
 std::string Mask::GetName()

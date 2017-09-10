@@ -93,7 +93,7 @@ bool MaskPainter::CheckPreconditions(bool reset)
 	int target_height = target->GetMat().rows;
 
 	if (reset)
-		Reset(target_width, target_height);
+		Reset();
 
 	// Must have dimensions
 	if (!target_width || !target_height)
@@ -102,7 +102,7 @@ bool MaskPainter::CheckPreconditions(bool reset)
 	if (target->GetPreview().cols != target_width || target->GetPreview().rows != target_height
 		|| target->GetCommitted().cols != target_width || target->GetCommitted().rows != target_height)
 	{
-		Reset(target_width, target_height);
+		Reset();
 	}
 
 	target->SetPaintMode(mode);
@@ -110,12 +110,18 @@ bool MaskPainter::CheckPreconditions(bool reset)
 	return true;
 }
 
-void MaskPainter::Reset(int w, int h)
+void MaskPainter::Reset()
 {
-	target->GetPreview() = Mat::zeros(w, h, CV_8UC1);
 	if (mode == PaintMode::ERASER)
+	{
 		target->GetPreview() = Scalar(255);
-	target->GetPreview().copyTo(target->GetCommitted());
+		target->GetCommitted() = Scalar(255);
+	}
+	else if (mode == PaintMode::PAINT_BRUSH)
+	{
+		target->GetPreview() = Scalar(0);
+		target->GetCommitted() = Scalar(0);
+	}
 }
 
 void MaskPainter::AttachLayer(Mask* m)
@@ -129,7 +135,7 @@ void MaskPainter::DetachLayer()
 	if (target == NULL)
 		return;
 
-	Reset(target->GetMat().cols, target->GetMat().rows);
+	Reset();
 	target->SetIsEditing(false);
 	target = NULL;
 }
@@ -145,8 +151,8 @@ void MaskPainter::PaintBrushOn()
 
 	if (target != NULL)
 	{
-		Reset(target->GetMat().cols, target->GetMat().rows);
 		target->SetPaintMode(mode);
+		Reset();
 	}
 }
 
@@ -162,7 +168,7 @@ void MaskPainter::EraserOn()
 	if (target != NULL)
 	{
 		target->SetPaintMode(mode);
-		Reset(target->GetMat().cols, target->GetMat().rows);
+		Reset();
 	}
 }
 

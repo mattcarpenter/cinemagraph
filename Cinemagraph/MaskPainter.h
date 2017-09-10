@@ -27,7 +27,7 @@ public:
 private:
 	bool CheckPreconditions();
 	bool CheckPreconditions(bool reset);
-	void Reset(int w, int h);
+	void Reset();
 	void DrawBrush(cv::Mat target, int x, int y);
 
 	Composition *composition;

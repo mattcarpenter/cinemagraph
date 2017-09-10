@@ -23,6 +23,7 @@ public:
 	void SetIsEditing(bool e);
 	PaintMode GetPaintMode();
 	void SetPaintMode(PaintMode m);
+
 private:
 	std::string name;
 	
