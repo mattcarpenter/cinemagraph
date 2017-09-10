@@ -20,6 +20,7 @@ public:
 	void EraserOn();
 	void EraserOff();
 	PaintMode GetPaintMode();
+	void ChangeBrushSize(int delta);
 private:
 	Composition *composition;
 	Mask *target = NULL;
@@ -29,4 +30,7 @@ private:
 	bool CheckPreconditions(bool reset);
 	void Reset(int w, int h);
 	PaintMode mode = PaintMode::PAINT_BRUSH;
+	int brush_size = 50;
+	int last_x = 0;
+	int last_y = 0;
 };

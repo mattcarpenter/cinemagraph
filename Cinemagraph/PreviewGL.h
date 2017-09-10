@@ -26,6 +26,7 @@ private:
 	void mousePressEvent(QMouseEvent * event);
 	void mouseMoveEvent(QMouseEvent * event);
 	void mouseReleaseEvent(QMouseEvent * event);
+	void wheelEvent(QWheelEvent * event);
 	cv::Rect GetDrawSize();
 	cv::Mat current_frame;
 	GLuint texture_id = 0;
@@ -37,4 +38,5 @@ signals:
 	void MouseDown(QPoint p);
 	void MouseMove(QPoint p);
 	void MouseUp(QPoint p);
+	void WheelTurn(int delta);
 };

@@ -64,9 +64,12 @@ void Cinemagraph::OpenGLInitialized()
 	connect(ui.preview_gl, SIGNAL(RequestNextFrame()), cinemagraph_worker, SLOT(RequestNextFrame()));
 	connect(cinemagraph_worker, &CinemagraphWorker::TextureReady, this, &Cinemagraph::OnTextureReady);
 	connect(cinemagraph_worker, &CinemagraphWorker::Thumbnail, this, &Cinemagraph::OnThumbnail);
+	
+	// PreviewGL connections
 	connect(ui.preview_gl, SIGNAL(MouseDown(QPoint)), cinemagraph_worker, SLOT(MouseDown(QPoint)));
 	connect(ui.preview_gl, SIGNAL(MouseMove(QPoint)), cinemagraph_worker, SLOT(MouseMove(QPoint)));
 	connect(ui.preview_gl, SIGNAL(MouseUp(QPoint)), cinemagraph_worker, SLOT(MouseUp(QPoint)));
+	connect(ui.preview_gl, SIGNAL(WheelTurn(int)), cinemagraph_worker, SLOT(WheelTurn(int)));
 
 	// Transport connections
 	connect(ui.transport_bar, SIGNAL(TransportMouseRelease()), cinemagraph_worker, SLOT(Unpause()));

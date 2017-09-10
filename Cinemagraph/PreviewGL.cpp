@@ -119,6 +119,11 @@ void PreviewGL::mouseReleaseEvent(QMouseEvent * event)
 	emit MouseUp(MouseToVideoPoint(event->pos()));
 }
 
+void PreviewGL::wheelEvent(QWheelEvent * event)
+{
+	emit WheelTurn(event->delta());
+}
+
 QPoint PreviewGL::MouseToVideoPoint(QPoint mouse_point)
 {
 	if (texture_width == 0 || texture_height == 0)

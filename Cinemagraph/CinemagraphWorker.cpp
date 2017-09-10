@@ -161,3 +161,8 @@ void CinemagraphWorker::EraserOff()
 {
 	mask_painter->EraserOff();
 }
+
+void CinemagraphWorker::WheelTurn(int delta)
+{
+	mask_painter->ChangeBrushSize(delta);
+}

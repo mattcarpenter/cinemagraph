@@ -140,6 +140,10 @@ void Composition::UpdateMask()
 
 	// TODO - Don't re-generate a composite mask if none of the mask layers
 	//        have been flagged as dirty.
+
+	// TODO - All this logic probably belongs in the MaskPainter.
+	//        Also, MaskPainter probably should be wrapped up into the
+	//        Layer class somehow.
 	
 	// Ensure our mask composition always has proper dimensions
 	if (mask.cols != GetWidth() || mask.rows != GetHeight()

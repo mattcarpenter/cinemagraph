@@ -14,6 +14,9 @@ MaskPainter::~MaskPainter()
 
 void MaskPainter::MouseMove(int x, int y)
 {
+	last_x = x;
+	last_y = y;
+
 	if (!CheckPreconditions())
 		return;
 
@@ -25,12 +28,12 @@ void MaskPainter::MouseMove(int x, int y)
 
 	if (committing)
 	{
-		rectangle(target->GetCommitted(), Rect(x-50, y-50, 100, 100), color, -1);
+		rectangle(target->GetCommitted(), Rect(x-(brush_size/2), y- (brush_size / 2), brush_size, brush_size), color, -1);
 	}
 	else
 	{
 		target->GetPreview() = Scalar(mode == PaintMode::ERASER ? 255 : 0);
-		rectangle(target->GetPreview(), Rect(x-50, y-50, 100, 100), color, -1);
+		rectangle(target->GetPreview(), Rect(x- (brush_size / 2), y- (brush_size / 2), brush_size, brush_size), color, -1);
 	}
 }
 
@@ -41,6 +44,9 @@ PaintMode MaskPainter::GetPaintMode()
 
 void MaskPainter::MouseDown(int x, int y)
 {
+	last_x = x;
+	last_y = y;
+
 	if (!CheckPreconditions(true))
 		return;
 
@@ -49,6 +55,9 @@ void MaskPainter::MouseDown(int x, int y)
 
 void MaskPainter::MouseUp(int x, int y)
 {
+	last_x = x;
+	last_y = y;
+
 	if (!CheckPreconditions())
 		return;
 
@@ -162,4 +171,10 @@ void MaskPainter::EraserOn()
 void MaskPainter::EraserOff()
 {
 
+}
+
+void MaskPainter::ChangeBrushSize(int delta)
+{
+	brush_size += delta;
+	MouseMove(last_x, last_y);
 }
