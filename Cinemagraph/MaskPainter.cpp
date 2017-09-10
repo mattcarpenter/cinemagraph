@@ -21,16 +21,22 @@ void MaskPainter::MouseMove(int x, int y)
 	int height = target->GetMat().rows;
 
 	// TODO - Eraser
+	Scalar color = Scalar(mode == PaintMode::PAINT_BRUSH ? 255 : 0);
 
 	if (committing)
 	{
-		rectangle(target->GetCommitted(), Rect(x-50, y-50, 100, 100), Scalar(255), -1);
+		rectangle(target->GetCommitted(), Rect(x-50, y-50, 100, 100), color, -1);
 	}
 	else
 	{
-		target->GetPreview() = Mat::zeros(height, width, CV_8UC1);
-		rectangle(target->GetPreview(), Rect(x-50, y-50, 100, 100), Scalar(255), -1);
+		target->GetPreview() = Scalar(mode == PaintMode::ERASER ? 255 : 0);
+		rectangle(target->GetPreview(), Rect(x-50, y-50, 100, 100), color, -1);
 	}
+}
+
+PaintMode MaskPainter::GetPaintMode()
+{
+	return mode;
 }
 
 void MaskPainter::MouseDown(int x, int y)
@@ -49,7 +55,14 @@ void MaskPainter::MouseUp(int x, int y)
 	committing = false;
 
 	// Copy committed mask to the target
-	cv::bitwise_or(target->GetMat(), target->GetCommitted(), target->GetMat());
+	if (mode == PaintMode::PAINT_BRUSH)
+	{
+		cv::bitwise_or(target->GetMat(), target->GetCommitted(), target->GetMat());
+	}
+	else
+	{
+		cv::bitwise_and(target->GetMat(), target->GetCommitted(), target->GetMat());
+	}
 }
 
 bool MaskPainter::CheckPreconditions()
@@ -85,12 +98,16 @@ bool MaskPainter::CheckPreconditions(bool reset)
 		Reset(target_width, target_height);
 	}
 
+	target->SetPaintMode(mode);
+
 	return true;
 }
 
 void MaskPainter::Reset(int w, int h)
 {
 	target->GetPreview() = Mat::zeros(w, h, CV_8UC1);
+	if (mode == PaintMode::ERASER)
+		target->GetPreview() = Scalar(255);
 	target->GetPreview().copyTo(target->GetCommitted());
 }
 
@@ -113,4 +130,36 @@ void MaskPainter::DetachLayer()
 Mask* MaskPainter::GetTarget()
 {
 	return target;
+}
+
+void MaskPainter::PaintBrushOn()
+{
+	mode = PaintMode::PAINT_BRUSH;
+
+	if (target != NULL)
+	{
+		Reset(target->GetMat().cols, target->GetMat().rows);
+		target->SetPaintMode(mode);
+	}
+}
+
+void MaskPainter::PaintBrushOff()
+{
+
+}
+
+void MaskPainter::EraserOn()
+{
+	mode = PaintMode::ERASER;
+	
+	if (target != NULL)
+	{
+		target->SetPaintMode(mode);
+		Reset(target->GetMat().cols, target->GetMat().rows);
+	}
+}
+
+void MaskPainter::EraserOff()
+{
+
 }

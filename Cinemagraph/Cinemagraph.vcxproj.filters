@@ -142,6 +142,15 @@
     <ClCompile Include="MaskPainter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ToolBar.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ToolBar.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Cinemagraph.h">
@@ -178,6 +187,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="ILayer.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ToolBar.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

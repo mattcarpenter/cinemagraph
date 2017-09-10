@@ -248,9 +248,9 @@ color: rgb(210,210,210);</string>
    <addaction name="menuView"/>
    <addaction name="menuHelp"/>
   </widget>
-  <widget class="QToolBar" name="toolbar">
+  <widget class="ToolBar" name="toolbar">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="movable">
     <bool>false</bool>
@@ -293,6 +293,11 @@ color: rgb(210,210,210);</string>
    <class>ProjectTree</class>
    <extends>QTreeView</extends>
    <header>projecttree.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ToolBar</class>
+   <extends>QToolBar</extends>
+   <header>toolbar.h</header>
   </customwidget>
  </customwidgets>
  <resources>

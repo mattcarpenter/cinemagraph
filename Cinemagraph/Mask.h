@@ -1,5 +1,6 @@
 #pragma once
 #include "ILayer.h"
+#include "ToolBar.h"
 #include <opencv2/opencv.hpp>
 
 class Mask :
@@ -20,7 +21,8 @@ public:
 	cv::Mat GetCommitted();
 	bool IsEditing();
 	void SetIsEditing(bool e);
-
+	PaintMode GetPaintMode();
+	void SetPaintMode(PaintMode m);
 private:
 	std::string name;
 	
@@ -31,6 +33,8 @@ private:
 	cv::Mat blank;
 	cv::Mat preview;
 	cv::Mat committed;
+
+	PaintMode paint_mode = PaintMode::PAINT_BRUSH;
 
 	bool is_editing = false;
 };

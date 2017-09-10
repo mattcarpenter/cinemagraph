@@ -159,8 +159,16 @@ void Composition::UpdateMask()
 		cv::bitwise_or(mask, m->GetMat(), mask);
 		if (m->IsEditing())
 		{
-			cv::bitwise_or(mask, m->GetPreview(), mask);
-			cv::bitwise_or(mask, m->GetCommitted(), mask);
+			if (m->GetPaintMode() == PaintMode::PAINT_BRUSH)
+			{
+				cv::bitwise_or(mask, m->GetPreview(), mask);
+				cv::bitwise_or(mask, m->GetCommitted(), mask);
+			}
+			else if (m->GetPaintMode() == PaintMode::ERASER)
+			{
+				cv::bitwise_and(mask, m->GetPreview(), mask);
+				cv::bitwise_and(mask, m->GetCommitted(), mask);
+			}
 		}
 
 		if (m->GetHighlighted() && m->GetVisible())

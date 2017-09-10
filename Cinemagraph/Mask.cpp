@@ -28,6 +28,16 @@ Mask::~Mask()
 {
 }
 
+void Mask::SetPaintMode(PaintMode m)
+{
+	paint_mode = m;
+}
+
+PaintMode Mask::GetPaintMode()
+{
+	return paint_mode;
+}
+
 void Mask::SetVisible(bool v)
 {
 	visible = v;

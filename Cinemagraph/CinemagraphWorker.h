@@ -43,6 +43,10 @@ public slots:
 	void MouseDown(QPoint p);
 	void MouseUp(QPoint p);
 	void MouseMove(QPoint p);
+	void PaintBrushOn();
+	void PaintBrushOff();
+	void EraserOn();
+	void EraserOff();
 
 private:
 	Composition *composition;

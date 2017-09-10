@@ -25,14 +25,6 @@ Cinemagraph::Cinemagraph(QWidget *parent)
 	qRegisterMetaType<GLuint>("GLuint");
 	qRegisterMetaType<ILayer*>("ILayer*");
 	qRegisterMetaType<QPoint>("QPoint");
-
-	// Set up toolbar
-	QIcon i = QIcon(":/Cinemagraph/Resources/pencil.png");
-	QIcon i2 = QIcon(":/Cinemagraph/Resources/eraser.png");
-	QAction *action = new QAction(i, "wtf", this);
-	QAction *action2 = new QAction(i2, "wtf2", this);
-	ui.toolbar->addAction(action);
-	ui.toolbar->addAction(action2);
 }
 
 /**
@@ -91,6 +83,12 @@ void Cinemagraph::OpenGLInitialized()
 	// Project Tree connections
 	connect(ui.project_tree, SIGNAL(DeleteLayer(ILayer*)), cinemagraph_worker, SLOT(DeleteLayer(ILayer*)));
 	connect(ui.project_tree, SIGNAL(SelectLayer(ILayer*)), cinemagraph_worker, SLOT(SelectLayer(ILayer*)));
+
+	// Toolbar connections
+	connect(ui.toolbar, SIGNAL(PaintBrushOn()), cinemagraph_worker, SLOT(PaintBrushOn()));
+	connect(ui.toolbar, SIGNAL(PaintBrushOff()), cinemagraph_worker, SLOT(PaintBrushOff()));
+	connect(ui.toolbar, SIGNAL(EraserOn()), cinemagraph_worker, SLOT(EraserOn()));
+	connect(ui.toolbar, SIGNAL(EraserOff()), cinemagraph_worker, SLOT(EraserOff()));
 
 	// Move the worker, context, and surface to the worker thread
 	cinemagraph_worker->moveToThread(cinemagraph_worker_thread);

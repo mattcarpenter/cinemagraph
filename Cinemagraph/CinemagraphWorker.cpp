@@ -141,3 +141,23 @@ void CinemagraphWorker::MouseUp(QPoint p)
 {
 	mask_painter->MouseUp(p.x(), p.y());
 }
+
+void CinemagraphWorker::PaintBrushOn()
+{
+	mask_painter->PaintBrushOn();
+}
+
+void CinemagraphWorker::PaintBrushOff()
+{
+	mask_painter->PaintBrushOff();
+}
+
+void CinemagraphWorker::EraserOn()
+{
+	mask_painter->EraserOn();
+}
+
+void CinemagraphWorker::EraserOff()
+{
+	mask_painter->EraserOff();
+}

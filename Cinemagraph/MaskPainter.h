@@ -1,6 +1,7 @@
 #pragma once
 #include "Composition.h"
 #include "Mask.h"
+#include "ToolBar.h"
 #include <opencv2/opencv.hpp>
 
 class MaskPainter
@@ -14,6 +15,11 @@ public:
 	void AttachLayer(Mask* m);
 	void DetachLayer();
 	Mask* GetTarget();
+	void PaintBrushOn();
+	void PaintBrushOff();
+	void EraserOn();
+	void EraserOff();
+	PaintMode GetPaintMode();
 private:
 	Composition *composition;
 	Mask *target = NULL;
@@ -22,4 +28,5 @@ private:
 	bool CheckPreconditions();
 	bool CheckPreconditions(bool reset);
 	void Reset(int w, int h);
+	PaintMode mode = PaintMode::PAINT_BRUSH;
 };

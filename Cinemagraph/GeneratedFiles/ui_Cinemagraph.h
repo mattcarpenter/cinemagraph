@@ -21,11 +21,11 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
-#include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include "previewgl.h"
 #include "projecttree.h"
+#include "toolbar.h"
 #include "transport.h"
 
 QT_BEGIN_NAMESPACE
@@ -60,7 +60,7 @@ public:
     QMenu *menuEdit;
     QMenu *menuView;
     QMenu *menuHelp;
-    QToolBar *toolbar;
+    ToolBar *toolbar;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *CinemagraphClass)
@@ -215,9 +215,9 @@ public:
         menuHelp = new QMenu(menuBar);
         menuHelp->setObjectName(QStringLiteral("menuHelp"));
         CinemagraphClass->setMenuBar(menuBar);
-        toolbar = new QToolBar(CinemagraphClass);
+        toolbar = new ToolBar(CinemagraphClass);
         toolbar->setObjectName(QStringLiteral("toolbar"));
-        toolbar->setEnabled(false);
+        toolbar->setEnabled(true);
         toolbar->setMovable(false);
         toolbar->setIconSize(QSize(24, 24));
         toolbar->setFloatable(false);
