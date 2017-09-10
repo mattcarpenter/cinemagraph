@@ -29,12 +29,14 @@ void MaskPainter::MouseMove(int x, int y)
 
 	if (committing)
 	{
-		rectangle(target->GetCommitted(), Rect(x-(brush_size/2), y- (brush_size / 2), brush_size, brush_size), color, -1);
+		//rectangle(target->GetCommitted(), Rect(x-(brush_size/2), y- (brush_size / 2), brush_size, brush_size), color, -1);
+		DrawBrush(target->GetCommitted(), x, y, color);
 	}
 	else
 	{
 		target->GetPreview() = Scalar(mode == PaintMode::ERASER ? 255 : 0);
-		rectangle(target->GetPreview(), Rect(x- (brush_size / 2), y- (brush_size / 2), brush_size, brush_size), color, -1);
+		DrawBrush(target->GetPreview(), x, y, color);
+		//rectangle(target->GetPreview(), Rect(x- (brush_size / 2), y- (brush_size / 2), brush_size, brush_size), color, -1);
 	}
 }
 
@@ -184,4 +186,9 @@ void MaskPainter::ChangeBrushHardness(int hardness)
 {
 	brush_hardness = hardness;
 	MouseMove(last_x, last_y);
+}
+
+void MaskPainter::DrawBrush(cv::Mat target, int x, int y, cv::Scalar color)
+{
+	rectangle(target, Rect(x - (brush_size / 2), y - (brush_size / 2), brush_size, brush_size), color, -1);
 }

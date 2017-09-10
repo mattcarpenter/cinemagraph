@@ -24,14 +24,16 @@ public:
 	void ChangeBrushHardness(int hardness);
 
 private:
-	Composition *composition;
-	Mask *target = NULL;
-	bool committing = false;
-
 	bool CheckPreconditions();
 	bool CheckPreconditions(bool reset);
 	void Reset(int w, int h);
+	void DrawBrush(cv::Mat target, int x, int y, cv::Scalar color);
+
+	Composition *composition;
+	Mask *target = NULL;
 	PaintMode mode = PaintMode::PAINT_BRUSH;
+	
+	bool committing = false;
 	int brush_size = 50;
 	int last_x = 0;
 	int last_y = 0;
