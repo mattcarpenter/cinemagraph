@@ -21,6 +21,8 @@ public:
 	void EraserOff();
 	PaintMode GetPaintMode();
 	void ChangeBrushSize(int delta);
+	void ChangeBrushHardness(int hardness);
+
 private:
 	Composition *composition;
 	Mask *target = NULL;
@@ -33,4 +35,5 @@ private:
 	int brush_size = 50;
 	int last_x = 0;
 	int last_y = 0;
+	int brush_hardness = 80;
 };

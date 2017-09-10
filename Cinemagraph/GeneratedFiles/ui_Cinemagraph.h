@@ -15,10 +15,12 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSlider>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
@@ -48,6 +50,8 @@ public:
     QWidget *sidebar;
     QVBoxLayout *verticalLayout;
     ProjectTree *project_tree;
+    QLabel *label;
+    QSlider *brush_hardness;
     QPushButton *load_video;
     QPushButton *set_as_still_button;
     QPushButton *load_still_frame;
@@ -151,6 +155,19 @@ public:
 
         verticalLayout->addWidget(project_tree);
 
+        label = new QLabel(sidebar);
+        label->setObjectName(QStringLiteral("label"));
+
+        verticalLayout->addWidget(label);
+
+        brush_hardness = new QSlider(sidebar);
+        brush_hardness->setObjectName(QStringLiteral("brush_hardness"));
+        brush_hardness->setPageStep(5);
+        brush_hardness->setValue(80);
+        brush_hardness->setOrientation(Qt::Horizontal);
+
+        verticalLayout->addWidget(brush_hardness);
+
         load_video = new QPushButton(sidebar);
         load_video->setObjectName(QStringLiteral("load_video"));
 
@@ -244,6 +261,7 @@ public:
         pause_button->setText(QApplication::translate("CinemagraphClass", "Pause", Q_NULLPTR));
         loop_in_button->setText(QApplication::translate("CinemagraphClass", "Set Loop In", Q_NULLPTR));
         loop_out_button->setText(QApplication::translate("CinemagraphClass", "Set Loop Out", Q_NULLPTR));
+        label->setText(QApplication::translate("CinemagraphClass", "Brush Hardness", Q_NULLPTR));
         load_video->setText(QApplication::translate("CinemagraphClass", "Load Video", Q_NULLPTR));
         set_as_still_button->setText(QApplication::translate("CinemagraphClass", "Set Current Frame as Still", Q_NULLPTR));
         load_still_frame->setText(QApplication::translate("CinemagraphClass", "Load Still Frame", Q_NULLPTR));

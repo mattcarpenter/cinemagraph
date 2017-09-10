@@ -71,6 +71,9 @@ void Cinemagraph::OpenGLInitialized()
 	connect(ui.preview_gl, SIGNAL(MouseUp(QPoint)), cinemagraph_worker, SLOT(MouseUp(QPoint)));
 	connect(ui.preview_gl, SIGNAL(WheelTurn(int)), cinemagraph_worker, SLOT(WheelTurn(int)));
 
+	// Slider connections
+	qDebug() << connect(ui.brush_hardness, SIGNAL(valueChanged(int)), cinemagraph_worker, SLOT(BrushHardness(int)));
+
 	// Transport connections
 	connect(ui.transport_bar, SIGNAL(TransportMouseRelease()), cinemagraph_worker, SLOT(Unpause()));
 	connect(ui.transport_bar, SIGNAL(TransportMousePress(int)), this, SLOT(OnTransportSeekStart(int)));

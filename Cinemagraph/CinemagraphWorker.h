@@ -48,6 +48,7 @@ public slots:
 	void EraserOn();
 	void EraserOff();
 	void WheelTurn(int delta);
+	void BrushHardness(int hardness);
 
 private:
 	Composition *composition;

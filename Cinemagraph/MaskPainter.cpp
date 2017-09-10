@@ -1,4 +1,5 @@
 #include "MaskPainter.h"
+#include <qdebug.h>
 
 using namespace std;
 using namespace cv;
@@ -176,5 +177,11 @@ void MaskPainter::EraserOff()
 void MaskPainter::ChangeBrushSize(int delta)
 {
 	brush_size += delta;
+	MouseMove(last_x, last_y);
+}
+
+void MaskPainter::ChangeBrushHardness(int hardness)
+{
+	brush_hardness = hardness;
 	MouseMove(last_x, last_y);
 }

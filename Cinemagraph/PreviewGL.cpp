@@ -121,7 +121,7 @@ void PreviewGL::mouseReleaseEvent(QMouseEvent * event)
 
 void PreviewGL::wheelEvent(QWheelEvent * event)
 {
-	emit WheelTurn(event->delta());
+	emit WheelTurn(event->delta() / 8);
 }
 
 QPoint PreviewGL::MouseToVideoPoint(QPoint mouse_point)

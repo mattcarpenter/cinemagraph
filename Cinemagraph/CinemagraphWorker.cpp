@@ -166,3 +166,8 @@ void CinemagraphWorker::WheelTurn(int delta)
 {
 	mask_painter->ChangeBrushSize(delta);
 }
+
+void CinemagraphWorker::BrushHardness(int hardness)
+{
+	mask_painter->ChangeBrushHardness(hardness);
+}

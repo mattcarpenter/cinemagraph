@@ -143,6 +143,26 @@ color: rgb(210,210,210);</string>
           </widget>
          </item>
          <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Brush Hardness</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="brush_hardness">
+           <property name="pageStep">
+            <number>5</number>
+           </property>
+           <property name="value">
+            <number>80</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="load_video">
            <property name="text">
             <string>Load Video</string>
