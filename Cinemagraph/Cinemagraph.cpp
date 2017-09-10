@@ -72,7 +72,8 @@ void Cinemagraph::OpenGLInitialized()
 	connect(ui.preview_gl, SIGNAL(WheelTurn(int)), cinemagraph_worker, SLOT(WheelTurn(int)));
 
 	// Slider connections
-	qDebug() << connect(ui.brush_hardness, SIGNAL(valueChanged(int)), cinemagraph_worker, SLOT(BrushHardness(int)));
+	connect(ui.brush_hardness, SIGNAL(valueChanged(int)), cinemagraph_worker, SLOT(BrushHardness(int)));
+	connect(ui.opacity, SIGNAL(valueChanged(int)), cinemagraph_worker, SLOT(BrushOpacity(int)));
 
 	// Transport connections
 	connect(ui.transport_bar, SIGNAL(TransportMouseRelease()), cinemagraph_worker, SLOT(Unpause()));

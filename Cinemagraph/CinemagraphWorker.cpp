@@ -169,5 +169,10 @@ void CinemagraphWorker::WheelTurn(int delta)
 
 void CinemagraphWorker::BrushHardness(int hardness)
 {
-	mask_painter->ChangeBrushHardness(hardness);
+	mask_painter->SetBrushHardness(hardness);
+}
+
+void CinemagraphWorker::BrushOpacity(int opacity)
+{
+	mask_painter->SetBrushOpacity(opacity);
 }

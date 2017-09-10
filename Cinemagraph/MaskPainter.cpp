@@ -24,19 +24,14 @@ void MaskPainter::MouseMove(int x, int y)
 	int width = target->GetMat().cols;
 	int height = target->GetMat().rows;
 
-	// TODO - Eraser
-	Scalar color = Scalar(mode == PaintMode::PAINT_BRUSH ? 255 : 0);
-
 	if (committing)
 	{
-		//rectangle(target->GetCommitted(), Rect(x-(brush_size/2), y- (brush_size / 2), brush_size, brush_size), color, -1);
-		DrawBrush(target->GetCommitted(), x, y, color);
+		DrawBrush(target->GetCommitted(), x, y);
 	}
 	else
 	{
 		target->GetPreview() = Scalar(mode == PaintMode::ERASER ? 255 : 0);
-		DrawBrush(target->GetPreview(), x, y, color);
-		//rectangle(target->GetPreview(), Rect(x- (brush_size / 2), y- (brush_size / 2), brush_size, brush_size), color, -1);
+		DrawBrush(target->GetPreview(), x, y);
 	}
 }
 
@@ -182,13 +177,20 @@ void MaskPainter::ChangeBrushSize(int delta)
 	MouseMove(last_x, last_y);
 }
 
-void MaskPainter::ChangeBrushHardness(int hardness)
+void MaskPainter::SetBrushHardness(int hardness)
 {
 	brush_hardness = hardness;
 	MouseMove(last_x, last_y);
 }
 
-void MaskPainter::DrawBrush(cv::Mat target, int x, int y, cv::Scalar color)
+void MaskPainter::SetBrushOpacity(int opacity)
 {
+	brush_opacity = opacity;
+	MouseMove(last_x, last_y);
+}
+
+void MaskPainter::DrawBrush(cv::Mat target, int x, int y)
+{
+	Scalar color = (mode == PaintMode::PAINT_BRUSH ? brush_opacity : 255 - brush_opacity);
 	rectangle(target, Rect(x - (brush_size / 2), y - (brush_size / 2), brush_size, brush_size), color, -1);
 }

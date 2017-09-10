@@ -21,13 +21,14 @@ public:
 	void EraserOff();
 	PaintMode GetPaintMode();
 	void ChangeBrushSize(int delta);
-	void ChangeBrushHardness(int hardness);
+	void SetBrushHardness(int hardness);
+	void SetBrushOpacity(int opacity);
 
 private:
 	bool CheckPreconditions();
 	bool CheckPreconditions(bool reset);
 	void Reset(int w, int h);
-	void DrawBrush(cv::Mat target, int x, int y, cv::Scalar color);
+	void DrawBrush(cv::Mat target, int x, int y);
 
 	Composition *composition;
 	Mask *target = NULL;
@@ -38,4 +39,5 @@ private:
 	int last_x = 0;
 	int last_y = 0;
 	int brush_hardness = 80;
+	int brush_opacity = 255;
 };

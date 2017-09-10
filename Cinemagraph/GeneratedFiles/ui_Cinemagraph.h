@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -50,6 +51,10 @@ public:
     QWidget *sidebar;
     QVBoxLayout *verticalLayout;
     ProjectTree *project_tree;
+    QHBoxLayout *horizontalLayout_2;
+    QGridLayout *gridLayout;
+    QLabel *label_2;
+    QSlider *opacity;
     QLabel *label;
     QSlider *brush_hardness;
     QPushButton *load_video;
@@ -155,10 +160,44 @@ public:
 
         verticalLayout->addWidget(project_tree);
 
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+
+        verticalLayout->addLayout(horizontalLayout_2);
+
+        gridLayout = new QGridLayout();
+        gridLayout->setSpacing(6);
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
+        label_2 = new QLabel(sidebar);
+        label_2->setObjectName(QStringLiteral("label_2"));
+        QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(label_2->sizePolicy().hasHeightForWidth());
+        label_2->setSizePolicy(sizePolicy2);
+
+        gridLayout->addWidget(label_2, 1, 0, 1, 1);
+
+        opacity = new QSlider(sidebar);
+        opacity->setObjectName(QStringLiteral("opacity"));
+        QSizePolicy sizePolicy3(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(opacity->sizePolicy().hasHeightForWidth());
+        opacity->setSizePolicy(sizePolicy3);
+        opacity->setMaximum(255);
+        opacity->setPageStep(5);
+        opacity->setValue(255);
+        opacity->setOrientation(Qt::Horizontal);
+
+        gridLayout->addWidget(opacity, 1, 1, 1, 1);
+
         label = new QLabel(sidebar);
         label->setObjectName(QStringLiteral("label"));
 
-        verticalLayout->addWidget(label);
+        gridLayout->addWidget(label, 0, 0, 1, 1);
 
         brush_hardness = new QSlider(sidebar);
         brush_hardness->setObjectName(QStringLiteral("brush_hardness"));
@@ -166,7 +205,10 @@ public:
         brush_hardness->setValue(80);
         brush_hardness->setOrientation(Qt::Horizontal);
 
-        verticalLayout->addWidget(brush_hardness);
+        gridLayout->addWidget(brush_hardness, 0, 1, 1, 1);
+
+
+        verticalLayout->addLayout(gridLayout);
 
         load_video = new QPushButton(sidebar);
         load_video->setObjectName(QStringLiteral("load_video"));
@@ -207,11 +249,11 @@ public:
 
         transport_bar = new Transport(centralWidget);
         transport_bar->setObjectName(QStringLiteral("transport_bar"));
-        QSizePolicy sizePolicy2(QSizePolicy::Ignored, QSizePolicy::Maximum);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(transport_bar->sizePolicy().hasHeightForWidth());
-        transport_bar->setSizePolicy(sizePolicy2);
+        QSizePolicy sizePolicy4(QSizePolicy::Ignored, QSizePolicy::Maximum);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(transport_bar->sizePolicy().hasHeightForWidth());
+        transport_bar->setSizePolicy(sizePolicy4);
         transport_bar->setMinimumSize(QSize(0, 50));
         transport_bar->setBaseSize(QSize(0, 50));
         transport_bar->setStyleSheet(QLatin1String("background-color: #222;\n"
@@ -261,6 +303,7 @@ public:
         pause_button->setText(QApplication::translate("CinemagraphClass", "Pause", Q_NULLPTR));
         loop_in_button->setText(QApplication::translate("CinemagraphClass", "Set Loop In", Q_NULLPTR));
         loop_out_button->setText(QApplication::translate("CinemagraphClass", "Set Loop Out", Q_NULLPTR));
+        label_2->setText(QApplication::translate("CinemagraphClass", "Brush Opacity", Q_NULLPTR));
         label->setText(QApplication::translate("CinemagraphClass", "Brush Hardness", Q_NULLPTR));
         load_video->setText(QApplication::translate("CinemagraphClass", "Load Video", Q_NULLPTR));
         set_as_still_button->setText(QApplication::translate("CinemagraphClass", "Set Current Frame as Still", Q_NULLPTR));
