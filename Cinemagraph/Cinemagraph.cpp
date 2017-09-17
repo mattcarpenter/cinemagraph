@@ -25,6 +25,8 @@ Cinemagraph::Cinemagraph(QWidget *parent)
 	qRegisterMetaType<GLuint>("GLuint");
 	qRegisterMetaType<ILayer*>("ILayer*");
 	qRegisterMetaType<QPoint>("QPoint");
+
+	align_test = new AlignTest();
 }
 
 /**
@@ -240,4 +242,9 @@ void Cinemagraph::LoopInPosition(int position)
 void Cinemagraph::LoopOutPosition(int position)
 {
 	ui.transport_bar->SetLoopOutPosition(position);
+}
+
+void Cinemagraph::on_new_gnd_layer_button_clicked()
+{
+	align_test->Test();
 }

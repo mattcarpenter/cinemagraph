@@ -70,6 +70,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AlignTest.cpp" />
     <ClCompile Include="CaptureFrame.cpp" />
     <ClCompile Include="Cinemagraph.cpp" />
     <ClCompile Include="Composition.cpp" />
@@ -178,6 +179,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AlignTest.h" />
     <ClInclude Include="asmOpenCV.h" />
     <ClInclude Include="CaptureFrame.h" />
     <CustomBuild Include="ToolBar.h">

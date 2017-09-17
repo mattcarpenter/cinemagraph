@@ -62,7 +62,7 @@ public:
     QPushButton *load_still_frame;
     QHBoxLayout *horizontalLayout;
     QPushButton *new_mask_layer_button;
-    QPushButton *pushButton_3;
+    QPushButton *new_gnd_layer_button;
     Transport *transport_bar;
     QMenuBar *menuBar;
     QMenu *menuFile;
@@ -233,10 +233,10 @@ public:
 
         horizontalLayout->addWidget(new_mask_layer_button);
 
-        pushButton_3 = new QPushButton(sidebar);
-        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
+        new_gnd_layer_button = new QPushButton(sidebar);
+        new_gnd_layer_button->setObjectName(QStringLiteral("new_gnd_layer_button"));
 
-        horizontalLayout->addWidget(pushButton_3);
+        horizontalLayout->addWidget(new_gnd_layer_button);
 
 
         verticalLayout->addLayout(horizontalLayout);
@@ -309,7 +309,7 @@ public:
         set_as_still_button->setText(QApplication::translate("CinemagraphClass", "Set Current Frame as Still", Q_NULLPTR));
         load_still_frame->setText(QApplication::translate("CinemagraphClass", "Load Still Frame", Q_NULLPTR));
         new_mask_layer_button->setText(QApplication::translate("CinemagraphClass", "New Mask Layer", Q_NULLPTR));
-        pushButton_3->setText(QApplication::translate("CinemagraphClass", "New GND Layer", Q_NULLPTR));
+        new_gnd_layer_button->setText(QApplication::translate("CinemagraphClass", "New GND Layer", Q_NULLPTR));
         menuFile->setTitle(QApplication::translate("CinemagraphClass", "File", Q_NULLPTR));
         menuEdit->setTitle(QApplication::translate("CinemagraphClass", "Edit", Q_NULLPTR));
         menuView->setTitle(QApplication::translate("CinemagraphClass", "View", Q_NULLPTR));

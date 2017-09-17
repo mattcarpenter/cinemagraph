@@ -1,12 +1,14 @@
 #include "MaskPainter.h"
 #include <qdebug.h>
-
+#include <math.h>
+# define M_PI           3.14159265358979323846  /* pi */
 using namespace std;
 using namespace cv;
 
 MaskPainter::MaskPainter(Composition *comp)
 {
 	composition = comp;
+	GenerateDab();
 }
 
 MaskPainter::~MaskPainter()
@@ -64,10 +66,11 @@ void MaskPainter::MouseUp(int x, int y)
 	// Copy committed mask to the target
 	if (mode == PaintMode::PAINT_BRUSH)
 	{
-		cv::bitwise_or(target->GetMat(), target->GetCommitted(), target->GetMat());
+		target->GetMat() = cv::max(target->GetMat(), target->GetCommitted());
 	}
 	else
 	{
+		// TODO - is bitwise_and right?
 		cv::bitwise_and(target->GetMat(), target->GetCommitted(), target->GetMat());
 	}
 }
@@ -180,23 +183,83 @@ void MaskPainter::EraserOff()
 void MaskPainter::ChangeBrushSize(int delta)
 {
 	brush_size += delta;
+	GenerateDab();
 	MouseMove(last_x, last_y);
 }
 
 void MaskPainter::SetBrushHardness(int hardness)
 {
 	brush_hardness = hardness;
+	GenerateDab();
 	MouseMove(last_x, last_y);
 }
 
 void MaskPainter::SetBrushOpacity(int opacity)
 {
 	brush_opacity = opacity;
+	GenerateDab();
 	MouseMove(last_x, last_y);
+}
+
+void MaskPainter::GenerateDab()
+{
+	dab = Mat::zeros(brush_size, brush_size, CV_8UC1);
+
+	// TODO - Erase versus Paint
+	// TODO - Opacity and Hardness
+
+	int x = brush_size / 2;
+	int y = brush_size / 2;
+	float angle = 90;
+	float cs = cos(angle / 360 * 2 * M_PI);
+	float sn = sin(angle / 360 * 2 * M_PI);
+	float opaque = 255;
+	float hardness = 0.7;
+	float aspect_ratio = 1;
+	// Enumerate each pixel in the a bounding box
+	int r = brush_size / 2;
+	for (int px = x - r; px < x + r; px++)
+	{
+		for (int py = y - r; py < y + r; py++)
+		{
+			float opa = 0;
+
+			float dx = px - x;
+			float dy = py - y;
+			float dyr = (dy*cs - dx*sn)*aspect_ratio;
+			float dxr = (dy*sn + dx*cs);
+			float dd = (dyr*dyr + dxr*dxr) / (r*r);
+			if (dd > 1)
+				opa = 0;
+			else if (dd < hardness)
+				opa = dd + 1 - (dd / hardness);
+			else
+				opa = hardness / (1 - hardness)*(1 - dd);
+			float pixel_opacity = opa * opaque;
+
+			dab.at<uchar>(Point(px, py)) = pixel_opacity;
+
+		}
+	}
+
+	// draw bounding box around dab (useful for position/size debugging)
+	// rectangle(dab, Rect(0, 0, dab.cols - 1, dab.rows - 1), Scalar(255), 1);
 }
 
 void MaskPainter::DrawBrush(cv::Mat target, int x, int y)
 {
-	Scalar color = (mode == PaintMode::PAINT_BRUSH ? brush_opacity : 255 - brush_opacity);
-	rectangle(target, Rect(x - (brush_size / 2), y - (brush_size / 2), brush_size, brush_size), color, -1);
+	Rect roi_rect = Rect(
+		max(0, x - (brush_size / 2)),
+		max(0, y - (brush_size / 2)),
+		brush_size,
+		brush_size
+	);
+
+	if (roi_rect.width + roi_rect.x > target.cols)
+		roi_rect.width = target.cols - roi_rect.x;
+
+	if (roi_rect.height + roi_rect.y > target.rows)
+		roi_rect.height = target.rows - roi_rect.y;
+
+	target(roi_rect) = cv::max(dab(Rect(0, 0, roi_rect.width, roi_rect.height)), target(roi_rect));
 }

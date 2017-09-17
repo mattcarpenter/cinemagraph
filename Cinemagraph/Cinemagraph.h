@@ -3,6 +3,7 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_Cinemagraph.h"
 #include "CinemagraphWorker.h"
+#include "AlignTest.h"
 
 class Cinemagraph : public QMainWindow
 {
@@ -20,6 +21,7 @@ public slots:
 	void on_loop_in_button_clicked();
 	void on_loop_out_button_clicked();
 	void on_set_as_still_button_clicked();
+	void on_new_gnd_layer_button_clicked();
 	void OpenGLInitialized();
 	void OnTextureReady(GLuint tid, int pos, int video_length, int width, int height);
 	void OnThumbnail(cv::Mat thumb);
@@ -32,6 +34,8 @@ private:
 
 	QThread *cinemagraph_worker_thread;
 	CinemagraphWorker *cinemagraph_worker;
+
+	AlignTest *align_test;
 
 signals:
 	void LoadVideo(std::string path);

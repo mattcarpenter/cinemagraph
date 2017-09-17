@@ -160,16 +160,17 @@ void Composition::UpdateMask()
 		if (!m->GetVisible())
 			continue;
 
-		cv::bitwise_or(mask, m->GetMat(), mask);
+		mask = cv::max(mask, m->GetMat());
 		if (m->IsEditing())
 		{
 			if (m->GetPaintMode() == PaintMode::PAINT_BRUSH)
 			{
-				cv::bitwise_or(mask, m->GetPreview(), mask);
-				cv::bitwise_or(mask, m->GetCommitted(), mask);
+				mask = cv::max(m->GetPreview(), mask);
+				mask = cv::max(m->GetCommitted(), mask);
 			}
 			else if (m->GetPaintMode() == PaintMode::ERASER)
 			{
+				// TODO - is and correct?
 				cv::bitwise_and(mask, m->GetPreview(), mask);
 				cv::bitwise_and(mask, m->GetCommitted(), mask);
 			}
@@ -177,11 +178,11 @@ void Composition::UpdateMask()
 
 		if (m->GetHighlighted() && m->GetVisible())
 		{
-			cv::bitwise_or(mask_highlight, m->GetMat(), mask_highlight);
+			mask_highlight = cv::max(mask_highlight, m->GetMat());
 			if (m->IsEditing())
 			{
-				cv::bitwise_or(mask_highlight, m->GetPreview(), mask_highlight);
-				cv::bitwise_or(mask_highlight, m->GetCommitted(), mask_highlight);
+				mask_highlight = cv::max(mask_highlight, m->GetPreview());
+				mask_highlight = cv::max(mask_highlight, m->GetCommitted());
 			}
 		}
 	}

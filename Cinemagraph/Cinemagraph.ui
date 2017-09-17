@@ -238,7 +238,7 @@ color: rgb(210,210,210);</string>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_3">
+            <widget class="QPushButton" name="new_gnd_layer_button">
              <property name="text">
               <string>New GND Layer</string>
              </property>

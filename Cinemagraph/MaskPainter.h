@@ -29,6 +29,7 @@ private:
 	bool CheckPreconditions(bool reset);
 	void Reset();
 	void DrawBrush(cv::Mat target, int x, int y);
+	void GenerateDab();
 
 	Composition *composition;
 	Mask *target = NULL;
@@ -40,4 +41,6 @@ private:
 	int last_y = 0;
 	int brush_hardness = 80;
 	int brush_opacity = 255;
+
+	cv::Mat dab;
 };
