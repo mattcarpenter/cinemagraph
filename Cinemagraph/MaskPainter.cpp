@@ -182,7 +182,7 @@ void MaskPainter::EraserOff()
 
 void MaskPainter::ChangeBrushSize(int delta)
 {
-	brush_size += delta;
+	brush_size = max(1, brush_size + delta);
 	GenerateDab();
 	MouseMove(last_x, last_y);
 }
@@ -213,10 +213,10 @@ void MaskPainter::GenerateDab()
 	float angle = 90;
 	float cs = cos(angle / 360 * 2 * M_PI);
 	float sn = sin(angle / 360 * 2 * M_PI);
-	float opaque = 255;
-	float hardness = 0.7;
+	float opaque = brush_opacity;
+	float hardness = brush_hardness / 100.0f;
 	float aspect_ratio = 1;
-	// Enumerate each pixel in the a bounding box
+
 	int r = brush_size / 2;
 	for (int px = x - r; px < x + r; px++)
 	{
@@ -232,10 +232,17 @@ void MaskPainter::GenerateDab()
 			if (dd > 1)
 				opa = 0;
 			else if (dd < hardness)
-				opa = dd + 1 - (dd / hardness);
+				opa = dd + 1 - (dd / hardness); //outer
 			else
-				opa = hardness / (1 - hardness)*(1 - dd);
+				opa = hardness / (1 - hardness)*(1 - dd); //inner
+			
+			opa = opa * (1.0f + (dd/2.0f));
 			float pixel_opacity = opa * opaque;
+			pixel_opacity = min(pixel_opacity, opaque);
+
+			if (pixel_opacity > opaque - 4) {
+				pixel_opacity = opaque;
+			}
 
 			dab.at<uchar>(Point(px, py)) = pixel_opacity;
 
@@ -243,23 +250,26 @@ void MaskPainter::GenerateDab()
 	}
 
 	// draw bounding box around dab (useful for position/size debugging)
-	// rectangle(dab, Rect(0, 0, dab.cols - 1, dab.rows - 1), Scalar(255), 1);
+	//rectangle(dab, Rect(0, 0, dab.cols - 1, dab.rows - 1), Scalar(255), 1);
 }
 
 void MaskPainter::DrawBrush(cv::Mat target, int x, int y)
 {
-	Rect roi_rect = Rect(
-		max(0, x - (brush_size / 2)),
-		max(0, y - (brush_size / 2)),
-		brush_size,
-		brush_size
-	);
+	if (x < 0 || y < 0 || x > target.cols || y > target.rows)
+		return;
 
-	if (roi_rect.width + roi_rect.x > target.cols)
-		roi_rect.width = target.cols - roi_rect.x;
+	Rect dest_rect = Rect(x - (brush_size / 2), y - (brush_size / 2), brush_size, brush_size);
+	
+	int left_clip = dest_rect.x < 0 ? -1 * dest_rect.x : 0;
+	int top_clip = dest_rect.y < 0 ? -1 * dest_rect.y : 0;
 
-	if (roi_rect.height + roi_rect.y > target.rows)
-		roi_rect.height = target.rows - roi_rect.y;
+	int right_clip = (dest_rect.x + dest_rect.width) > target.cols ? (dest_rect.x + dest_rect.width) - target.cols : 0;
+	int bottom_clip = (dest_rect.y + dest_rect.height) > target.rows ? (dest_rect.y + dest_rect.height) - target.rows : 0;
 
-	target(roi_rect) = cv::max(dab(Rect(0, 0, roi_rect.width, roi_rect.height)), target(roi_rect));
+	Rect dest_roi = Rect(dest_rect.x + left_clip, dest_rect.y + top_clip, dest_rect.width - right_clip - left_clip, dest_rect.height - bottom_clip - top_clip);
+
+	if (mode == PaintMode::PAINT_BRUSH)
+		target(dest_roi) = cv::max(dab(Rect(left_clip, top_clip, brush_size - right_clip - left_clip, brush_size - bottom_clip - top_clip)), target(dest_roi));
+	else
+		target(dest_roi) = cv::min(Scalar(255) - dab(Rect(left_clip, top_clip, brush_size - right_clip - left_clip, brush_size - bottom_clip - top_clip)), target(dest_roi));
 }

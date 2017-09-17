@@ -170,7 +170,6 @@ void Composition::UpdateMask()
 			}
 			else if (m->GetPaintMode() == PaintMode::ERASER)
 			{
-				// TODO - is and correct?
 				cv::bitwise_and(mask, m->GetPreview(), mask);
 				cv::bitwise_and(mask, m->GetCommitted(), mask);
 			}
