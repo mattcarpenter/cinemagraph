@@ -170,8 +170,8 @@ void Composition::UpdateMask()
 			}
 			else if (m->GetPaintMode() == PaintMode::ERASER)
 			{
-				cv::bitwise_and(mask, m->GetPreview(), mask);
-				cv::bitwise_and(mask, m->GetCommitted(), mask);
+				mask = cv::min(mask, m->GetPreview());
+				mask = cv::min(mask, m->GetCommitted());
 			}
 		}
 
